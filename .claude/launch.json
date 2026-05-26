@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vite",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd '/Users/romain/Documents/DEV/Full Stack/PokeHub-Laravel' && npx vite --port=5174"],
+      "port": 5174
+    },
+    {
+      "name": "pokehub-laravel",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd '/Users/romain/Documents/DEV/Full Stack/PokeHub-Laravel' && php artisan serve --port=3002"],
+      "port": 3002
+    }
+  ]
+}

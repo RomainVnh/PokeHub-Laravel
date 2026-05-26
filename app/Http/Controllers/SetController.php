@@ -1,0 +1,160 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\UserCard;
+use App\Services\PokemonTcgService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class SetController extends Controller
+{
+    public function __construct(
+        private PokemonTcgService $tcg
+    ) {}
+
+    /**
+     * Home page — featured sets.
+     */
+    public function home()
+    {
+        $sets = $this->tcg->getAllSets();
+        $featured = array_slice($sets, 0, 12);
+
+        return view('home', [
+            'sets'      => $sets,
+            'featured'  => $featured,
+            'totalSets' => count($sets),
+        ]);
+    }
+
+    /**
+     * Encyclopedia — all sets grouped by series.
+     */
+    public function encyclopedia()
+    {
+        $sets = $this->tcg->getAllSets();
+
+        $series = [];
+        foreach ($sets as $set) {
+            $series[$set['series']][] = $set;
+        }
+
+        return view('encyclopedia', [
+            'sets'   => $sets,
+            'series' => $series,
+        ]);
+    }
+
+    /**
+     * Set detail — cards gallery (main page matching screenshot).
+     */
+    public function show(string $setId)
+    {
+        $set = $this->tcg->getSet($setId);
+
+        if (!$set) {
+            return redirect()->route('encyclopedia')->with('error', 'Impossible de charger cette édition. L\'API est temporairement indisponible.');
+        }
+
+        $cards = $this->tcg->getSetCards($setId, 1, 250);
+
+        // Group cards by supertype
+        $grouped = [];
+        $counts  = ['Pokémon' => 0, 'Trainer' => 0, 'Energy' => 0];
+
+        foreach ($cards as $card) {
+            $type = $card['supertype'] ?? 'Other';
+            $grouped[$type][] = $card;
+            if (isset($counts[$type])) {
+                $counts[$type]++;
+            }
+        }
+
+        // Get collected cards for authenticated users
+        $collectedCards = [];
+        if (Auth::check()) {
+            $collectedCards = UserCard::where('user_id', Auth::id())
+                ->where('set_id', $setId)
+                ->pluck('quantity', 'card_id')
+                ->toArray();
+        }
+
+        return view('set-detail', [
+            'set'            => $set,
+            'cards'          => $cards,
+            'grouped'        => $grouped,
+            'counts'         => $counts,
+            'collectedCards' => $collectedCards,
+        ]);
+    }
+
+    /**
+     * Booster set selection.
+     */
+    public function openIndex()
+    {
+        $sets = $this->tcg->getAllSets();
+
+        return view('open-index', [
+            'sets' => $sets,
+        ]);
+    }
+
+    /**
+     * Open a booster for a set.
+     */
+    public function openBooster(string $setId)
+    {
+        $set = $this->tcg->getSet($setId);
+
+        if (!$set) {
+            return redirect()->route('open.index')->with('error', 'Impossible de charger cette édition. L\'API est temporairement indisponible.');
+        }
+
+        $cards = $this->tcg->getSetCards($setId, 1, 250);
+
+        if (empty($cards)) {
+            return redirect()->route('open.index')->with('error', 'Aucune carte trouvée pour cette édition.');
+        }
+
+        $drawn = $this->tcg->drawBoosterCards($cards, 5);
+
+        // Track new cards for authenticated users
+        $newCards = [];
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $drawnIds = array_map(fn($c) => $c['id'], $drawn);
+            $existing = UserCard::where('user_id', $userId)
+                ->whereIn('card_id', $drawnIds)
+                ->pluck('card_id')
+                ->toArray();
+
+            foreach ($drawn as $card) {
+                $cardId = $card['id'];
+                $isNew = !in_array($cardId, $existing);
+                $newCards[$cardId] = $isNew;
+
+                if ($isNew) {
+                    UserCard::create([
+                        'user_id'   => $userId,
+                        'card_id'   => $cardId,
+                        'card_name' => $card['name'],
+                        'set_id'    => $setId,
+                        'rarity'    => $card['rarity'] ?? null,
+                    ]);
+                } else {
+                    UserCard::where('user_id', $userId)
+                        ->where('card_id', $cardId)
+                        ->increment('quantity');
+                }
+            }
+        }
+
+        return view('open-booster', [
+            'set'      => $set,
+            'drawn'    => $drawn,
+            'newCards'  => $newCards,
+        ]);
+    }
+}

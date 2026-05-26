@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $title ?? 'PokeHub' }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900" rel="stylesheet" />
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>[x-cloak] { display: none !important; }</style>
+    <script>
+        (function() {
+            const t = localStorage.getItem('pokehub_theme') || 'dark';
+            if (t === 'light') document.documentElement.setAttribute('data-theme', 'light');
+        })();
+    </script>
+</head>
+<body class="h-full flex overflow-hidden" style="font-family: 'Inter', sans-serif;">
+
+    {{-- ═══ Sidebar ═══════════════════════════════════════════════════ --}}
+    <aside
+        x-data="{ collapsed: false }"
+        :class="collapsed ? 'w-[88px]' : 'w-[260px]'"
+        class="flex-shrink-0 h-full flex flex-col transition-all duration-300 overflow-hidden"
+        style="background: var(--bg-primary); border-right: 1px solid var(--border);"
+    >
+        {{-- Logo --}}
+        <div class="pt-5 pb-5 flex justify-center">
+            <a href="/" class="block">
+                <img x-show="!collapsed" x-transition.opacity
+                     src="{{ asset('images/logopokemonhub.png') }}"
+                     alt="PokemonHub"
+                     class="h-28 object-contain" />
+                <img x-show="collapsed"
+                     src="{{ asset('images/logo_réduit.png') }}"
+                     alt="PokemonHub"
+                     style="height: 64px; width: 64px; object-fit: contain;" />
+            </a>
+        </div>
+
+        {{-- Nav --}}
+        <nav class="flex-1 px-3 pt-2 flex flex-col gap-1">
+            @php
+                $navItems = [
+                    ['href' => '/',             'label' => 'Accueil',       'vb' => '576', 'icon' => 'M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V360c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32V472c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z'],
+                    ['href' => '/encyclopedia', 'label' => 'Encyclopédie',  'vb' => '448', 'icon' => 'M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z'],
+                    ['href' => '/open',         'label' => 'Boosters',      'vb' => '576', 'icon' => 'M290.8 48.6l78.4 29.7L288 109.5 206.8 78.3l78.4-29.7c1.8-.7 3.8-.7 5.7 0zM136 92.5V204.7c-1.3 .4-2.6 .8-3.9 1.3l-96 36.4C14.4 250.6 0 271.5 0 294.7V413.9c0 22.2 13.1 42.3 33.5 51.3l96 42.2c14.4 6.3 30.7 6.3 45.1 0L288 461.8l113.5 45.6c14.4 6.3 30.7 6.3 45.1 0l96-42.2c20.3-8.9 33.5-29.1 33.5-51.3V294.7c0-23.3-14.4-44.1-36.1-52.4l-96-36.4c-1.3-.5-2.6-.9-3.9-1.3V92.5c0-23.3-14.4-44.1-36.1-52.4l-96-36.4c-12.2-4.6-25.8-4.6-38 0l-96 36.4C150.4 48.4 136 69.3 136 92.5z'],
+                    ['href' => '/friends',      'label' => 'Amis',          'vb' => '640', 'icon' => 'M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96H21.3C9.6 320 0 310.4 0 298.7zM405.3 320h-.7c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM416 224a112 112 0 1 0 -224 0 112 112 0 1 0 224 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z'],
+                    ['href' => '/trades',       'label' => 'Échanges',      'vb' => '512', 'icon' => 'M32 96l320 0V32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l128 128c12.5 12.5 12.5 32.8 0 45.3l-128 128c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V224L32 224c-17.7 0-32-14.3-32-32V128c0-17.7 14.3-32 32-32zM480 416H160V480c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6v64H480c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32z'],
+                ];
+                $currentPath = '/'.ltrim(request()->path(), '/');
+            @endphp
+
+            @foreach($navItems as $item)
+                @php
+                    $active = ($item['href'] === '/' && $currentPath === '/') || ($item['href'] !== '/' && str_starts_with($currentPath, $item['href']));
+                @endphp
+                <a href="{{ $item['href'] }}" class="nav-link {{ $active ? 'active' : '' }}">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 nav-icon" fill="currentColor" viewBox="0 0 {{ $item['vb'] }} 512">
+                        <path d="{{ $item['icon'] }}"/>
+                    </svg>
+                    <span x-show="!collapsed" x-transition.opacity class="whitespace-nowrap">{{ $item['label'] }}</span>
+                    @if($active)
+                        <span x-show="!collapsed" class="ml-auto w-1.5 h-1.5 rounded-full bg-white"></span>
+                    @endif
+                </a>
+            @endforeach
+        </nav>
+
+        {{-- Bottom --}}
+        <div class="px-3 pb-4 flex flex-col gap-1">
+            <div class="separator mx-2 mb-3"></div>
+
+            {{-- Token display --}}
+            @auth
+                <div class="token-display mx-1 mb-2" x-show="!collapsed">
+                    <div class="token-icon">
+                        <svg fill="currentColor" viewBox="0 0 512 512">
+                            <path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80zM224.5 161.7c6.8-.4 13.7-.7 20.8-.9C266.3 142.3 304.6 128 352 128c38 0 72.6 9.4 99.7 24.8C492.3 170.5 512 192 512 214.7V256c0 46-104.3 80-192 80c-14.1 0-27.8-.8-41-2.2c1.3-5 2.4-10.2 3.3-15.5C364.6 307.9 432 276.8 432 256c0-13.3-16.7-25.6-44.1-35C380.1 236.4 368 256 352 272c-5.2 5.2-10.8 10-16.8 14.3C393.8 296.8 432 280 432 256v-42.7c0-8.3-7.2-17.4-20-25.9c-15-10-35.6-18-60.3-23.2C327.6 155.5 296 152 264 154.3c-11.7 .8-23 2.2-33.5 4V161.7zM96 256c0-53 43-96 96-96s96 43 96 96-43 96-96 96-96-43-96-96zm96-32a32 32 0 1 0 0 64 32 32 0 1 0 0-64z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-[10px] font-medium" style="color: var(--text-muted);">PokéTokens</p>
+                        <p class="text-sm font-bold" style="color: #d4a843;">1 250</p>
+                    </div>
+                </div>
+                {{-- Collapsed token --}}
+                <div x-show="collapsed" class="flex justify-center mb-2">
+                    <div class="token-icon" title="1 250 PokéTokens" style="width: 32px; height: 32px;">
+                        <svg fill="currentColor" viewBox="0 0 512 512" style="width: 16px; height: 16px;">
+                            <path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80zM224.5 161.7c6.8-.4 13.7-.7 20.8-.9C266.3 142.3 304.6 128 352 128c38 0 72.6 9.4 99.7 24.8C492.3 170.5 512 192 512 214.7V256c0 46-104.3 80-192 80c-14.1 0-27.8-.8-41-2.2c1.3-5 2.4-10.2 3.3-15.5C364.6 307.9 432 276.8 432 256c0-13.3-16.7-25.6-44.1-35C380.1 236.4 368 256 352 272c-5.2 5.2-10.8 10-16.8 14.3C393.8 296.8 432 280 432 256v-42.7c0-8.3-7.2-17.4-20-25.9c-15-10-35.6-18-60.3-23.2C327.6 155.5 296 152 264 154.3c-11.7 .8-23 2.2-33.5 4V161.7zM96 256c0-53 43-96 96-96s96 43 96 96-43 96-96 96-96-43-96-96zm96-32a32 32 0 1 0 0 64 32 32 0 1 0 0-64z"/>
+                        </svg>
+                    </div>
+                </div>
+            @endauth
+
+            @auth
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;">
+                    @if(auth()->user()->avatar)
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background: var(--bg-card);">
+                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-7 h-7 object-contain" />
+                        </div>
+                    @else
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background: var(--accent); color: var(--text-inverse);">
+                            {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
+                        </div>
+                    @endif
+                    <div x-show="!collapsed" class="flex-1 min-w-0">
+                        <p class="text-xs font-semibold truncate" style="color: var(--text-primary);">{{ auth()->user()->name ?? 'Dresseur' }}</p>
+                        <p class="text-[10px] font-medium" style="color: var(--text-muted);">Mon profil</p>
+                    </div>
+                </a>
+                <form method="POST" action="{{ route('logout') }}" x-show="!collapsed">
+                    @csrf
+                    <button type="submit" class="nav-link w-full text-xs" style="color: var(--text-muted);">
+
+                        <svg class="w-[16px] h-[16px] flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
+                            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
+                        </svg>
+                        <span class="whitespace-nowrap">Déconnexion</span>
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="nav-link" style="color: var(--text-secondary);">
+
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
+                        <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/>
+                    </svg>
+                    <span x-show="!collapsed" class="whitespace-nowrap font-semibold">Connexion</span>
+                </a>
+            @endauth
+
+            {{-- Theme toggle --}}
+            <div class="flex items-center gap-2.5 w-full h-9 rounded-lg mt-1 px-3"
+                 style="color: var(--text-muted);">
+                {{-- Sun icon --}}
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
+                    <path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM256 160a96 96 0 1 0 0 192 96 96 0 1 0 0-192z"/>
+                </svg>
+                <div x-show="!collapsed" @click="(() => {
+                        const html = document.documentElement;
+                        const isLight = html.getAttribute('data-theme') === 'light';
+                        if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
+                        else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
+                    })()" class="theme-toggle" title="Changer de thème"></div>
+                {{-- Moon icon --}}
+                <svg x-show="!collapsed" class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 384 512">
+                    <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
+                </svg>
+            </div>
+            {{-- Collapsed toggle: just a clickable icon --}}
+            <div x-show="collapsed" class="flex justify-center mt-1">
+                <button @click="(() => {
+                        const html = document.documentElement;
+                        const isLight = html.getAttribute('data-theme') === 'light';
+                        if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
+                        else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
+                    })()" class="theme-toggle" title="Changer de thème" style="width: 36px; height: 22px;"></button>
+            </div>
+
+            <button @click="collapsed = !collapsed"
+                    class="flex items-center justify-center w-full h-9 rounded-lg mt-1 transition-all" style="color: var(--text-muted); opacity: 0.5;">
+
+                <svg x-show="!collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                <svg x-show="collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+            </button>
+        </div>
+    </aside>
+
+    {{-- ═══ Main ══════════════════════════════════════════════════════ --}}
+    <main class="flex-1 overflow-y-auto">
+        {{ $slot }}
+    </main>
+
+</body>
+</html>
