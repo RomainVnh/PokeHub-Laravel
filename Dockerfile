@@ -4,7 +4,7 @@ FROM php:8.4-cli AS base
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libsqlite3-dev libxml2-dev libcurl4-openssl-dev \
     libonig-dev nodejs npm \
-    && docker-php-ext-install pdo pdo_sqlite mbstring xml curl ctype fileinfo tokenizer \
+    && docker-php-ext-install pdo pdo_sqlite mbstring xml \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
