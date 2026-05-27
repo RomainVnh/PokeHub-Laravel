@@ -696,7 +696,8 @@ html, body {
 .theme-toggle::after {
   content: '';
   position: absolute;
-  top: 3px;
+  top: 50%;
+  transform: translateY(-50%);
   left: 3px;
   width: 18px;
   height: 18px;
@@ -710,7 +711,7 @@ html, body {
   border-color: rgba(0,0,0,0.12);
 }
 [data-theme="light"] .theme-toggle::after {
-  left: 25px;
+  left: calc(100% - 21px);
   background: #3b82f6;
 }
 

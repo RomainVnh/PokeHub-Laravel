@@ -49,6 +49,9 @@
                     ['href' => '/friends',      'label' => 'Amis',          'vb' => '640', 'icon' => 'M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96H21.3C9.6 320 0 310.4 0 298.7zM405.3 320h-.7c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM416 224a112 112 0 1 0 -224 0 112 112 0 1 0 224 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z'],
                     ['href' => '/trades',       'label' => 'Échanges',      'vb' => '512', 'icon' => 'M32 96l320 0V32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l128 128c12.5 12.5 12.5 32.8 0 45.3l-128 128c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V224L32 224c-17.7 0-32-14.3-32-32V128c0-17.7 14.3-32 32-32zM480 416H160V480c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9l-128-128c-12.5-12.5-12.5-32.8 0-45.3l128-128c9.2-9.2 22.9-11.9 34.9-6.9s19.8 16.6 19.8 29.6v64H480c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32z'],
                 ];
+                @if(Auth::check())
+                    $navItems[] = ['href' => '/profile', 'label' => 'Profil', 'vb' => '448', 'icon' => 'M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z'];
+                @endif
                 $currentPath = '/'.ltrim(request()->path(), '/');
             @endphp
 
@@ -132,31 +135,19 @@
             @endauth
 
             {{-- Theme toggle --}}
-            <div class="flex items-center justify-center gap-2.5 w-full h-9 rounded-lg mt-2 px-3"
-                 style="color: var(--text-muted);">
-                {{-- Sun icon --}}
-                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
-                    <path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM256 160a96 96 0 1 0 0 192 96 96 0 1 0 0-192z"/>
-                </svg>
-                <div x-show="!collapsed" @click="(() => {
-                        const html = document.documentElement;
-                        const isLight = html.getAttribute('data-theme') === 'light';
-                        if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
-                        else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
-                    })()" class="theme-toggle" title="Changer de thème"></div>
+            <div class="flex items-center justify-center gap-2.5 w-full rounded-lg mt-2 px-3 py-1"
+                 style="color: var(--text-muted);"
+                 @click="(() => {
+                    const html = document.documentElement;
+                    const isLight = html.getAttribute('data-theme') === 'light';
+                    if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
+                    else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
+                 })()">
+                <div class="theme-toggle" :style="collapsed ? 'width:36px;height:20px' : ''" title="Changer de thème"></div>
                 {{-- Moon icon --}}
                 <svg x-show="!collapsed" class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 384 512">
                     <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
                 </svg>
-            </div>
-            {{-- Collapsed toggle: just a clickable icon --}}
-            <div x-show="collapsed" class="flex justify-center mt-1">
-                <button @click="(() => {
-                        const html = document.documentElement;
-                        const isLight = html.getAttribute('data-theme') === 'light';
-                        if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
-                        else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
-                    })()" class="theme-toggle" title="Changer de thème" style="width: 36px; height: 22px;"></button>
             </div>
 
             <button @click="collapsed = !collapsed"
