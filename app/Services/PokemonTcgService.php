@@ -18,7 +18,7 @@ class PokemonTcgService
     private function request(string $path): ?array
     {
         try {
-            $request = Http::connectTimeout(10)->timeout(60)->retry(2, 1000);
+            $request = Http::connectTimeout(15)->timeout(30)->retry(1, 500);
 
             if ($this->apiKey) {
                 $request = $request->withHeaders(['X-Api-Key' => $this->apiKey]);
@@ -42,8 +42,14 @@ class PokemonTcgService
     public function getAllSets(): array
     {
         $result = Cache::remember('ptcg_all_sets', 3600, function () {
-            $data = $this->request('/sets?orderBy=-releaseDate&pageSize=250');
-            return $data['data'] ?? null;
+            $data = $this->request('/sets?pageSize=250');
+            if (!isset($data['data'])) {
+                return null;
+            }
+            // Sort by release date descending in PHP (API orderBy is too slow)
+            $sets = $data['data'];
+            usort($sets, fn($a, $b) => strcmp($b['releaseDate'] ?? '', $a['releaseDate'] ?? ''));
+            return $sets;
         });
 
         // Don't cache failures
@@ -80,8 +86,22 @@ class PokemonTcgService
     {
         $cacheKey = "ptcg_cards_{$setId}_{$page}_{$pageSize}";
         $result = Cache::remember($cacheKey, 3600, function () use ($setId, $page, $pageSize) {
-            $data = $this->request("/cards?q=set.id:{$setId}&page={$page}&pageSize={$pageSize}&orderBy=number");
-            return $data['data'] ?? null;
+            $data = $this->request("/cards?q=set.id:{$setId}&page={$page}&pageSize={$pageSize}");
+            if (!isset($data['data'])) {
+                return null;
+            }
+            // Sort by number in PHP (API orderBy is too slow)
+            $cards = $data['data'];
+            usort($cards, function($a, $b) {
+                $numA = $a['number'] ?? '0';
+                $numB = $b['number'] ?? '0';
+                // Numeric sort when both are numbers, string sort otherwise
+                if (is_numeric($numA) && is_numeric($numB)) {
+                    return (int)$numA - (int)$numB;
+                }
+                return strcmp($numA, $numB);
+            });
+            return $cards;
         });
 
         if (empty($result)) {

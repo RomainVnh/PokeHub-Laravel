@@ -59,6 +59,24 @@ class SetController extends Controller
 
         $cards = $this->tcg->getSetCards($setId, 1, 250);
 
+        // Strip card data to only what the view/popup needs (massive perf improvement)
+        $stripCard = function (array $card): array {
+            return [
+                'id'        => $card['id'] ?? '',
+                'name'      => $card['name'] ?? '',
+                'supertype' => $card['supertype'] ?? '',
+                'subtypes'  => $card['subtypes'] ?? [],
+                'types'     => $card['types'] ?? [],
+                'hp'        => $card['hp'] ?? null,
+                'rarity'    => $card['rarity'] ?? null,
+                'artist'    => $card['artist'] ?? null,
+                'number'    => $card['number'] ?? '',
+                'images'    => ['small' => $card['images']['small'] ?? ''],
+            ];
+        };
+
+        $cards = array_map($stripCard, $cards);
+
         // Group cards by supertype
         $grouped = [];
         $counts  = ['Pokémon' => 0, 'Trainer' => 0, 'Energy' => 0];

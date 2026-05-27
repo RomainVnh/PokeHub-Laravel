@@ -23,6 +23,9 @@ RUN npm ci
 # Copy the rest of the application
 COPY . .
 
+# PHP production config (increase max_execution_time for API calls)
+COPY docker/php.ini /usr/local/etc/php/conf.d/99-pokehub.ini
+
 # Run post-install composer scripts
 RUN composer dump-autoload --optimize
 

@@ -20,5 +20,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Carbon\Carbon::setLocale('fr');
+
+        // Allow up to 120s for pages that call the Pokemon TCG API
+        set_time_limit(120);
     }
 }
