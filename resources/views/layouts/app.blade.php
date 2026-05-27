@@ -26,21 +26,21 @@
         style="background: var(--bg-primary); border-right: 1px solid var(--border);"
     >
         {{-- Logo --}}
-        <div class="pt-5 pb-5 flex justify-center">
+        <div class="pt-6 pb-4 flex justify-center px-4">
             <a href="/" class="block">
                 <img x-show="!collapsed" x-transition.opacity
                      src="{{ asset('images/logopokehub_2.png') }}"
                      alt="PokeHub"
-                     class="h-28 object-contain" />
+                     class="h-36 object-contain" />
                 <img x-show="collapsed"
                      src="{{ asset('images/logopokehub_2.png') }}"
                      alt="PokeHub"
-                     style="height: 64px; width: 64px; object-fit: contain;" />
+                     style="height: 48px; width: 48px; object-fit: contain;" />
             </a>
         </div>
 
         {{-- Nav --}}
-        <nav class="flex-1 px-3 pt-2 flex flex-col gap-1">
+        <nav class="flex-1 px-3 pt-2 flex flex-col justify-center gap-1.5">
             @php
                 $navItems = [
                     ['href' => '/',             'label' => 'Accueil',       'vb' => '576', 'icon' => 'M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V360c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32V472c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z'],
@@ -57,7 +57,7 @@
                     $active = ($item['href'] === '/' && $currentPath === '/') || ($item['href'] !== '/' && str_starts_with($currentPath, $item['href']));
                 @endphp
                 <a href="{{ $item['href'] }}" class="nav-link {{ $active ? 'active' : '' }}">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 nav-icon" fill="currentColor" viewBox="0 0 {{ $item['vb'] }} 512">
+                    <svg class="w-5 h-5 flex-shrink-0 nav-icon" fill="currentColor" viewBox="0 0 {{ $item['vb'] }} 512">
                         <path d="{{ $item['icon'] }}"/>
                     </svg>
                     <span x-show="!collapsed" x-transition.opacity class="whitespace-nowrap">{{ $item['label'] }}</span>
@@ -69,7 +69,7 @@
         </nav>
 
         {{-- Bottom --}}
-        <div class="px-3 pb-4 flex flex-col gap-1">
+        <div class="px-3 pb-5 flex flex-col gap-1.5">
             <div class="separator mx-2 mb-3"></div>
 
             {{-- Token display --}}
@@ -124,7 +124,7 @@
             @else
                 <a href="{{ route('login') }}" class="nav-link" style="color: var(--text-secondary);">
 
-                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
                         <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/>
                     </svg>
                     <span x-show="!collapsed" class="whitespace-nowrap font-semibold">Connexion</span>
@@ -132,7 +132,7 @@
             @endauth
 
             {{-- Theme toggle --}}
-            <div class="flex items-center gap-2.5 w-full h-9 rounded-lg mt-1 px-3"
+            <div class="flex items-center justify-center gap-2.5 w-full h-9 rounded-lg mt-2 px-3"
                  style="color: var(--text-muted);">
                 {{-- Sun icon --}}
                 <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
