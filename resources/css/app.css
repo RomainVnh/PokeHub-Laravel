@@ -623,6 +623,67 @@ html, body {
   50%      { box-shadow: 0 0 30px rgba(255,215,0,0.4), 0 0 60px rgba(255,215,0,0.2); }
 }
 
+/* ── Rare card tier indicators (set-detail) ─────────────────────── */
+.card-tier-ultra {
+  border-color: rgba(163,130,255,0.4) !important;
+}
+.card-tier-ultra:hover {
+  border-color: rgba(163,130,255,0.7) !important;
+  box-shadow: 0 4px 16px rgba(163,130,255,0.25);
+}
+.card-tier-illustration {
+  border-color: rgba(74,158,255,0.4) !important;
+}
+.card-tier-illustration:hover {
+  border-color: rgba(74,158,255,0.7) !important;
+  box-shadow: 0 4px 16px rgba(74,158,255,0.25);
+}
+.card-tier-secret {
+  border-color: rgba(255,215,0,0.5) !important;
+  box-shadow: 0 0 8px rgba(255,215,0,0.15);
+}
+.card-tier-secret:hover {
+  border-color: rgba(255,215,0,0.8) !important;
+  box-shadow: 0 4px 20px rgba(255,215,0,0.35);
+}
+
+.card-tier-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 8px;
+  font-weight: 900;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  line-height: 1;
+  pointer-events: none;
+  z-index: 5;
+}
+.card-tier-badge-ultra {
+  background: rgba(163,130,255,0.85);
+  color: white;
+  box-shadow: 0 1px 4px rgba(163,130,255,0.4);
+}
+.card-tier-badge-illustration {
+  background: rgba(74,158,255,0.85);
+  color: white;
+  box-shadow: 0 1px 4px rgba(74,158,255,0.4);
+}
+.card-tier-badge-secret {
+  background: linear-gradient(135deg, #ffd700, #f59e0b);
+  color: #000;
+  box-shadow: 0 1px 6px rgba(255,215,0,0.5);
+  animation: secretBadgePulse 2s ease-in-out infinite;
+}
+@keyframes secretBadgePulse {
+  0%, 100% { box-shadow: 0 1px 6px rgba(255,215,0,0.4); }
+  50% { box-shadow: 0 2px 10px rgba(255,215,0,0.7); }
+}
+
 /* ── Uncollected cards (greyed out) ───────────────────────────────── */
 .card-not-collected {
   filter: grayscale(1) brightness(0.4);

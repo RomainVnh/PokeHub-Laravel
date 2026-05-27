@@ -105,8 +105,17 @@
                                 @php
                                     $isCollected = isset($collectedCards[$card['id']]);
                                     $qty = $collectedCards[$card['id']] ?? 0;
+                                    $rarity = strtolower($card['rarity'] ?? '');
+                                    $tier = null;
+                                    if (str_contains($rarity, 'secret') || str_contains($rarity, 'rainbow') || str_contains($rarity, 'hyper') || str_contains($rarity, 'gold') || (str_contains($rarity, 'shiny') && str_contains($rarity, 'ultra'))) {
+                                        $tier = 'secret';
+                                    } elseif (str_contains($rarity, 'illustration') || str_contains($rarity, 'special art') || str_contains($rarity, 'amazing')) {
+                                        $tier = 'illustration';
+                                    } elseif (str_contains($rarity, 'ultra') || str_contains($rarity, 'double') || str_contains($rarity, 'ace') || str_contains($rarity, ' ex') || str_contains($rarity, ' gx') || str_contains($rarity, 'vmax') || str_contains($rarity, 'vstar')) {
+                                        $tier = 'ultra';
+                                    }
                                 @endphp
-                                <div class="card-thumb anim-fade-up {{ !$isCollected && Auth::check() ? 'card-not-collected' : '' }}"
+                                <div class="card-thumb anim-fade-up {{ !$isCollected && Auth::check() ? 'card-not-collected' : '' }} {{ $tier ? 'card-tier-' . $tier : '' }}"
                                      style="animation-delay: {{ min($index * 15, 500) }}ms"
                                      @mouseenter="showPopup($event, @js($card))"
                                      @mouseleave="hidePopup()"
@@ -116,6 +125,11 @@
                                          loading="lazy" />
                                     @if($isCollected)
                                         <span class="badge badge-gold badge-count">{{ $qty }}</span>
+                                    @endif
+                                    @if($tier)
+                                        <span class="card-tier-badge card-tier-badge-{{ $tier }}">
+                                            @if($tier === 'secret') ✦ @elseif($tier === 'illustration') ★ @else ◆ @endif
+                                        </span>
                                     @endif
                                 </div>
                             @endforeach
@@ -193,14 +207,32 @@
                             @endphp
 
                             @foreach($unique as $name => $entry)
+                                @php
+                                    $sideRarity = strtolower($entry['card']['rarity'] ?? '');
+                                    $sideTier = null;
+                                    if (str_contains($sideRarity, 'secret') || str_contains($sideRarity, 'rainbow') || str_contains($sideRarity, 'hyper') || str_contains($sideRarity, 'gold') || (str_contains($sideRarity, 'shiny') && str_contains($sideRarity, 'ultra'))) {
+                                        $sideTier = 'secret';
+                                    } elseif (str_contains($sideRarity, 'illustration') || str_contains($sideRarity, 'special art') || str_contains($sideRarity, 'amazing')) {
+                                        $sideTier = 'illustration';
+                                    } elseif (str_contains($sideRarity, 'ultra') || str_contains($sideRarity, 'double') || str_contains($sideRarity, 'ace') || str_contains($sideRarity, ' ex') || str_contains($sideRarity, ' gx') || str_contains($sideRarity, 'vmax') || str_contains($sideRarity, 'vstar')) {
+                                        $sideTier = 'ultra';
+                                    }
+                                @endphp
                                 <div class="flex items-center justify-between py-1.5 px-2.5 rounded-lg cursor-pointer group transition-colors"
                                      @click="selectCard(@js($entry['card']))"
                                      onmouseover="this.style.background='var(--bg-surface)'"
                                      onmouseout="this.style.background='transparent'">
-                                    <span class="text-[13px] truncate transition-colors"
-                                          style="color: {{ ($entry['collected'] || !Auth::check()) ? 'var(--text-secondary)' : 'var(--text-muted)' }}; {{ (!$entry['collected'] && Auth::check()) ? 'opacity: 0.4;' : '' }}">
-                                        {{ $name }}
-                                    </span>
+                                    <div class="flex items-center gap-2 min-w-0 flex-1">
+                                        @if($sideTier)
+                                            <span class="flex-shrink-0 w-2 h-2 rounded-full"
+                                                  style="background: {{ $sideTier === 'secret' ? '#ffd700' : ($sideTier === 'illustration' ? '#4a9eff' : '#a382ff') }};
+                                                         box-shadow: 0 0 4px {{ $sideTier === 'secret' ? 'rgba(255,215,0,0.5)' : ($sideTier === 'illustration' ? 'rgba(74,158,255,0.5)' : 'rgba(163,130,255,0.5)') }};"></span>
+                                        @endif
+                                        <span class="text-[13px] truncate transition-colors"
+                                              style="color: {{ $sideTier === 'secret' ? '#ffd700' : ($sideTier === 'illustration' ? '#4a9eff' : ($sideTier === 'ultra' ? '#a382ff' : (($entry['collected'] || !Auth::check()) ? 'var(--text-secondary)' : 'var(--text-muted)'))) }}; {{ (!$entry['collected'] && Auth::check() && !$sideTier) ? 'opacity: 0.4;' : '' }} {{ $sideTier ? 'font-weight: 600;' : '' }}">
+                                            {{ $name }}
+                                        </span>
+                                    </div>
                                     @if($entry['collected'] || !Auth::check())
                                         <span class="list-pill list-pill-sm flex-shrink-0 ml-2">{{ $entry['count'] }}</span>
                                     @else
