@@ -171,6 +171,7 @@ class SetController extends Controller
                         'card_name' => $card['name'],
                         'set_id'    => $setId,
                         'rarity'    => $card['rarity'] ?? null,
+                        'image_url' => $card['images']['small'] ?? '',
                     ]);
                 } else {
                     UserCard::where('user_id', $userId)

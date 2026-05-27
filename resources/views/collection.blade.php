@@ -86,13 +86,23 @@
 
                         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
                             @foreach($col['cards'] as $card)
+                                @php
+                                    $imgUrl = $card['image_url'] ?? '';
+                                    if (!$imgUrl) {
+                                        // Fallback: try to build URL from card_id (won't work for all sets)
+                                        $parts = explode('-', $card['card_id']);
+                                        $imgUrl = 'https://assets.tcgdex.net/en/' . $card['set_id'] . '/' . ($parts[1] ?? $card['card_id']) . '/low.webp';
+                                    }
+                                @endphp
                                 <div x-show="(filterRarity === 'all' || '{{ addslashes($card['rarity'] ?? '') }}' === filterRarity) && (!search || '{{ strtolower(addslashes($card['card_name'])) }}'.includes(search.toLowerCase()))"
                                      class="relative group">
-                                    <div class="card-item rounded-xl overflow-hidden border transition-all duration-200"
+                                    <div class="card-item rounded-lg overflow-hidden border transition-all duration-200"
                                          style="border-color: var(--border); background: var(--bg-card);">
-                                        <div class="aspect-[63/88] bg-center bg-cover bg-no-repeat"
-                                             style="background-image: url('https://assets.tcgdex.net/en/{{ $card['set_id'] }}/{{ explode('-', $card['card_id'])[1] ?? $card['card_id'] }}/low.webp');">
-                                        </div>
+                                        <img src="{{ $imgUrl }}"
+                                             alt="{{ $card['card_name'] }}"
+                                             class="w-full aspect-[63/88] object-cover"
+                                             loading="lazy"
+                                             onerror="this.style.opacity='0.3'" />
                                     </div>
                                     @if($card['quantity'] > 1)
                                         <span class="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full"

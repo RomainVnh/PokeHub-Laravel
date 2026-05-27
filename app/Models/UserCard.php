@@ -13,6 +13,7 @@ class UserCard extends Model
         'card_name',
         'set_id',
         'rarity',
+        'image_url',
         'quantity',
     ];
 

@@ -49,6 +49,7 @@ class CollectionController extends Controller
                     'card_name' => $card->card_name,
                     'set_id'    => $card->set_id,
                     'rarity'    => $card->rarity,
+                    'image_url' => $card->image_url,
                     'quantity'  => $card->quantity,
                 ];
                 $totalCards += $card->quantity;
