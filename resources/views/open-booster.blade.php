@@ -2,24 +2,21 @@
     <x-slot:title>Booster {{ $set['name'] }} — PokeHub</x-slot:title>
 
     @php
-        // Rarity tier classification
-        $rareTierMap = [
-            'Rare'       => 'rare', 'Rare Holo'  => 'rare',
-            'Rare Holo EX' => 'ultra', 'Rare Holo GX' => 'ultra', 'Rare Holo V' => 'ultra',
-            'Rare Holo VMAX' => 'ultra', 'Rare Holo VSTAR' => 'ultra', 'Rare Ultra' => 'ultra',
-            'Rare ACE' => 'ultra', 'ACE SPEC Rare' => 'ultra',
-            'Double Rare' => 'ultra', 'Ultra Rare' => 'ultra',
-            'Illustration Rare' => 'illustration', 'Special Illustration Rare' => 'illustration',
-            'Amazing Rare' => 'illustration',
-            'Rare Secret' => 'secret', 'Rare Rainbow' => 'secret', 'Hyper Rare' => 'secret',
-            'Shiny Ultra Rare' => 'secret', 'Shiny Rare' => 'secret', 'Rare Shiny' => 'secret',
-        ];
+        // Flexible rarity tier classification (works with any API's rarity names)
+        $getTier = function(?string $rarity): ?string {
+            if (!$rarity) return null;
+            $lower = strtolower($rarity);
+            if (str_contains($lower, 'secret') || str_contains($lower, 'rainbow') || str_contains($lower, 'hyper') || (str_contains($lower, 'shiny') && str_contains($lower, 'ultra'))) return 'secret';
+            if (str_contains($lower, 'illustration') || str_contains($lower, 'amazing')) return 'illustration';
+            if (str_contains($lower, 'ultra') || str_contains($lower, 'double') || str_contains($lower, 'ace') || str_contains($lower, ' ex') || str_contains($lower, ' gx') || str_contains($lower, 'vmax') || str_contains($lower, 'vstar')) return 'ultra';
+            if (str_contains($lower, 'rare') || str_contains($lower, 'holo')) return 'rare';
+            return null;
+        };
 
         $cardsData = [];
         $rareCount = 0;
         foreach ($drawn as $i => $card) {
-            $rarity = $card['rarity'] ?? 'Common';
-            $tier = $rareTierMap[$rarity] ?? null;
+            $tier = $getTier($card['rarity'] ?? null);
             if ($tier) $rareCount++;
             $cardsData[] = [
                 'id'        => $card['id'],
@@ -119,8 +116,7 @@
         <div class="flex items-center gap-5 mb-12">
             @foreach($drawn as $i => $card)
                 @php
-                    $cardRarity = $card['rarity'] ?? 'Common';
-                    $tier = $rareTierMap[$cardRarity] ?? null;
+                    $tier = $getTier($card['rarity'] ?? null);
                 @endphp
                 <div class="relative cursor-pointer anim-fade-up"
                      @click="reveal({{ $i }})"
