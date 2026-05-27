@@ -38,12 +38,21 @@ class PokemonTcgService
      */
     private function normalizeSet(array $raw, ?string $serieName = null, ?string $releaseDate = null): array
     {
+        // Build symbol URL: prefer explicit, else construct from serie path
+        $symbolUrl = '';
+        if (isset($raw['symbol'])) {
+            $symbolUrl = $raw['symbol'] . '.png';
+        } elseif (isset($raw['serie']['id'])) {
+            // Construct from known TCGdex asset pattern
+            $symbolUrl = "https://assets.tcgdex.net/univ/{$raw['serie']['id']}/{$raw['id']}/symbol.png";
+        }
+
         return [
             'id'           => $raw['id'] ?? '',
             'name'         => $raw['name'] ?? '',
             'images'       => [
                 'logo'   => isset($raw['logo']) ? $raw['logo'] . '.png' : '',
-                'symbol' => isset($raw['symbol']) ? $raw['symbol'] . '.png' : '',
+                'symbol' => $symbolUrl,
             ],
             'series'       => $serieName ?? $raw['serie']['name'] ?? 'Unknown',
             'releaseDate'  => $releaseDate ?? $raw['releaseDate'] ?? '1999-01-01',

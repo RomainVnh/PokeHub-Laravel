@@ -30,7 +30,7 @@
                     <div class="flex items-center gap-4 mb-4">
                         <div class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                              style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(8px);">
-                            <img src="{{ $set['images']['symbol'] ?? '' }}" alt="" class="w-7 h-7 object-contain" />
+                            <img src="{{ $set['images']['symbol'] ?? '' }}" alt="" class="w-7 h-7 object-contain" onerror="this.style.display='none'" />
                         </div>
                         <div>
                             <h1 class="text-2xl font-extrabold text-white leading-tight">{{ $set['name'] }}</h1>
