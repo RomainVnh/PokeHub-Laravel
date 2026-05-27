@@ -322,33 +322,33 @@ class PokemonTcgService
         };
 
         $rollRare = function () use ($pick, $tiers) {
-            $roll = mt_rand(1, 1000);
+            $roll = mt_rand(1, 10000);
 
-            if ($roll <= 10 && count($tiers['secret']) > 0) {
-                return $pick($tiers['secret']);         // 1%
-            } elseif ($roll <= 50 && count($tiers['illustration']) > 0) {
-                return $pick($tiers['illustration']);    // 4%
-            } elseif ($roll <= 150 && count($tiers['ultra']) > 0) {
-                return $pick($tiers['ultra']);           // 10%
+            if ($roll <= 30 && count($tiers['secret']) > 0) {
+                return $pick($tiers['secret']);         // 0.3%
+            } elseif ($roll <= 150 && count($tiers['illustration']) > 0) {
+                return $pick($tiers['illustration']);    // 1.2%
+            } elseif ($roll <= 600 && count($tiers['ultra']) > 0) {
+                return $pick($tiers['ultra']);           // 4.5%
             } elseif (count($tiers['rare']) > 0) {
-                return $pick($tiers['rare']);            // 60% + 25% fallback
+                return $pick($tiers['rare']);            // ~70%
             } else {
                 return $pick($tiers['uncommon']);
             }
         };
 
-        // Multi-rare roll
-        $multiRoll = mt_rand(1, 1000);
-        if ($multiRoll <= 1) {
-            $rareSlots = 5;   // 0.1% — God pack
-        } elseif ($multiRoll <= 6) {
-            $rareSlots = 4;   // 0.5%
-        } elseif ($multiRoll <= 36) {
-            $rareSlots = 3;   // 3%
-        } elseif ($multiRoll <= 156) {
-            $rareSlots = 2;   // 12%
+        // Multi-rare roll (reduced chances)
+        $multiRoll = mt_rand(1, 10000);
+        if ($multiRoll <= 5) {
+            $rareSlots = 5;   // 0.05% — God pack
+        } elseif ($multiRoll <= 30) {
+            $rareSlots = 4;   // 0.25%
+        } elseif ($multiRoll <= 150) {
+            $rareSlots = 3;   // 1.2%
+        } elseif ($multiRoll <= 800) {
+            $rareSlots = 2;   // 6.5%
         } else {
-            $rareSlots = 1;   // 84.4%
+            $rareSlots = 1;   // 92%
         }
 
         $rareSlots   = min($rareSlots, $count);

@@ -27,6 +27,17 @@
                     Ouvre des boosters, découvre des cartes rares et constitue ta collection complète. Toutes les éditions depuis 1999.
                 </p>
 
+                {{-- Search bar --}}
+                <div class="relative max-w-lg mx-auto mb-8">
+                    <svg class="absolute w-4 h-4 pointer-events-none" style="left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted);" fill="currentColor" viewBox="0 0 512 512">
+                        <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/>
+                    </svg>
+                    <form action="{{ route('encyclopedia') }}" method="GET">
+                        <input type="text" name="q" placeholder="Rechercher une édition, un Pokemon..."
+                               class="input-dark w-full" style="padding: 12px 16px 12px 44px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(8px);" />
+                    </form>
+                </div>
+
                 <div class="flex items-center gap-4">
                     <a href="{{ route('encyclopedia') }}" class="btn btn-surface">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 448 512"><path d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>

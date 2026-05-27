@@ -32,11 +32,20 @@ RUN composer dump-autoload --optimize
 # Build frontend assets
 RUN npm run build
 
-# Create SQLite database
+# Create SQLite database (fallback if no volume mounted)
 RUN mkdir -p database && touch database/database.sqlite
+
+# Create persistent data directory for Railway volume
+RUN mkdir -p /data
 
 # Expose port
 EXPOSE 3002
 
-# Start the application
-CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-3002}"]
+# Start: use persistent volume if available, then migrate + serve
+CMD ["sh", "-c", "\
+  if [ -d /data ]; then \
+    if [ ! -f /data/database.sqlite ]; then cp database/database.sqlite /data/database.sqlite; fi; \
+    export DB_DATABASE=/data/database.sqlite; \
+  fi && \
+  php artisan migrate --force && \
+  php artisan serve --host=0.0.0.0 --port=${PORT:-3002}"]

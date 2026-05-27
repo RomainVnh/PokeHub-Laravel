@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\PriceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetController;
 use Illuminate\Support\Facades\Route;
@@ -12,13 +14,16 @@ Route::get('/open',          [SetController::class, 'openIndex'])->name('open.in
 Route::get('/open/{setId}',  [SetController::class, 'openBooster'])->name('open.booster');
 Route::get('/friends',       fn() => view('friends'))->name('friends');
 Route::get('/trades',        fn() => view('trades'))->name('trades');
+Route::get('/prices',        [PriceController::class, 'index'])->name('prices');
+Route::get('/api/prices/search', [PriceController::class, 'search'])->name('prices.search');
 
 // ── Auth routes (Breeze) ───────────────────────────────────────────────
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/collection', [CollectionController::class, 'index'])->name('collection');
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');

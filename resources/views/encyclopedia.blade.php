@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot:title>Encyclopédie — PokeHub</x-slot:title>
 
-    <div class="min-h-full" x-data="{ search: '', selectedSeries: 'all' }">
+    <div class="min-h-full" x-data="{ search: '', selectedSeries: 'all', sortBy: 'newest', minCards: 0 }">
 
         {{-- ── Header ─────────────────────────────────────────────── --}}
         <div class="page-hero px-10 pt-10 pb-8" style="border-bottom: 1px solid var(--border);">
-            <img src="{{ asset('images/pokedex.jpg') }}" alt="" class="page-hero-bg" />
+            <img src="{{ asset('images/bannieredarkrai.webp') }}" alt="" class="page-hero-bg" />
             <div class="page-hero-overlay"></div>
             <div class="relative z-10">
             <span class="label-xs block mb-3" style="color: var(--text-primary);">Explorer</span>
@@ -21,11 +21,24 @@
                            class="input-dark" style="padding-left: 40px;" />
                 </div>
                 <select x-model="selectedSeries"
-                        class="input-dark w-auto min-w-[200px] cursor-pointer">
+                        class="input-dark w-auto min-w-[180px] cursor-pointer">
                     <option value="all">Toutes les séries</option>
                     @foreach(array_keys($series) as $seriesName)
                         <option value="{{ $seriesName }}">{{ $seriesName }}</option>
                     @endforeach
+                </select>
+                <select x-model="sortBy" class="input-dark w-auto min-w-[160px] cursor-pointer">
+                    <option value="newest">Plus récentes</option>
+                    <option value="oldest">Plus anciennes</option>
+                    <option value="most-cards">Plus de cartes</option>
+                    <option value="least-cards">Moins de cartes</option>
+                </select>
+                <select x-model="minCards" class="input-dark w-auto min-w-[140px] cursor-pointer">
+                    <option value="0">Toutes tailles</option>
+                    <option value="50">50+ cartes</option>
+                    <option value="100">100+ cartes</option>
+                    <option value="150">150+ cartes</option>
+                    <option value="200">200+ cartes</option>
                 </select>
             </div>
             </div>
@@ -50,7 +63,7 @@
                                 $pct       = Auth::check() ? round(($collected / $total) * 100) : -1;
                                 $noCards   = Auth::check() && $collected === 0;
                             @endphp
-                            <div x-show="!search || '{{ strtolower(addslashes($set['name'])) }}'.includes(search.toLowerCase())"
+                            <div x-show="(!search || '{{ strtolower(addslashes($set['name'])) }}'.includes(search.toLowerCase())) && {{ $set['printedTotal'] }} >= minCards"
                                  class="edition-card group {{ $noCards ? 'edition-not-collected' : '' }}">
                                 <div class="h-28 flex items-center justify-center p-4"
                                      style="background: linear-gradient(145deg, rgba(212,168,67,0.04) 0%, rgba(139,92,246,0.04) 100%);">

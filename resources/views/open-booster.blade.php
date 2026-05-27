@@ -15,9 +15,9 @@
 
         // Drop rate per tier (from the booster algorithm)
         $dropRates = [
-            'ultra'        => '10%',
-            'illustration' => '4%',
-            'secret'       => '1%',
+            'ultra'        => '4.5%',
+            'illustration' => '1.2%',
+            'secret'       => '0.3%',
         ];
 
         $cardsData = [];
@@ -40,7 +40,13 @@
             cards: {{ json_encode($cardsData) }},
             rareCount: {{ $rareCount }},
             isAuth: {{ Auth::check() ? 'true' : 'false' }},
+            zoomedCard: null,
             get allRevealed() { return this.revealed.every(Boolean); },
+            showZoom(i) {
+                if (!this.revealed[i]) return;
+                this.zoomedCard = i;
+            },
+            closeZoom() { this.zoomedCard = null; },
             isCardNew(i) {
                 const card = this.cards[i];
                 if (this.isAuth) return card.isNew;
@@ -127,7 +133,7 @@
                     $tier = $getTier($card['rarity'] ?? null);
                 @endphp
                 <div class="relative cursor-pointer anim-fade-up"
-                     @click="reveal({{ $i }})"
+                     @click="revealed[{{ $i }}] ? showZoom({{ $i }}) : reveal({{ $i }})"
                      style="perspective: 1200px; width: 200px; animation-delay: {{ $i * 100 }}ms;">
 
                     {{-- NEW badge --}}
@@ -182,6 +188,34 @@
             <a href="{{ route('set.show', $set['id']) }}" class="btn btn-ghost">
                 Voir l'édition
             </a>
+        </div>
+
+        {{-- ── Zoomed card overlay ──────────────────────────────── --}}
+        <div x-show="zoomedCard !== null" x-transition.opacity
+             @click.self="closeZoom()" @keydown.escape.window="closeZoom()"
+             class="fixed inset-0 z-50 flex items-center justify-center"
+             style="background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);">
+            <template x-if="zoomedCard !== null">
+                <div class="relative" style="max-width: 380px; width: 90vw;">
+                    @foreach($drawn as $i => $card)
+                        <div x-show="zoomedCard === {{ $i }}" x-transition.scale class="relative">
+                            <img src="{{ $card['images']['large'] ?? $card['images']['small'] }}"
+                                 alt="{{ $card['name'] }}"
+                                 class="w-full rounded-2xl shadow-2xl" />
+                            <div class="text-center mt-4">
+                                <p class="text-lg font-bold" style="color: var(--text-primary);">{{ $card['name'] }}</p>
+                                @if($card['rarity'] ?? false)
+                                    <p class="text-sm mt-1" style="color: var(--gold);">{{ $card['rarity'] }}</p>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                    <button @click="closeZoom()" class="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center"
+                            style="background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(8px);">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                    </button>
+                </div>
+            </template>
         </div>
     </div>
 </x-app-layout>
