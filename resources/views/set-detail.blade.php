@@ -6,16 +6,9 @@
         {{-- ═══ LEFT — Main content ═══════════════════════════════════ --}}
         <div class="flex-1 overflow-y-auto" id="main-scroll">
 
-            {{-- ── Banner (edition-specific artwork) ────────────── --}}
-            @php
-                // Pick a hero card for the banner — favour a rare/evolved card near index 5
-                $heroIdx = min(4, max(0, count($cards) - 1));
-                $heroBanner = $cards[$heroIdx]['images']['large']
-                           ?? $cards[$heroIdx]['images']['small']
-                           ?? asset('images/banniere.jpg');
-            @endphp
+            {{-- ── Banner ────────────── --}}
             <div class="relative overflow-hidden" style="height: 280px; background: var(--bg-base);">
-                <img src="{{ $heroBanner }}" alt="Banner"
+                <img src="{{ asset('images/bannieredarkrai.webp') }}" alt="Banner"
                      class="absolute inset-0 w-full h-full object-cover"
                      style="opacity: 0.35; filter: blur(6px); transform: scale(1.15);" />
                 <div class="absolute inset-0"
