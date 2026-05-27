@@ -13,15 +13,23 @@
             return null;
         };
 
+        // Drop rate per tier (from the booster algorithm)
+        $dropRates = [
+            'ultra'        => '10%',
+            'illustration' => '4%',
+            'secret'       => '1%',
+        ];
+
         $cardsData = [];
         $rareCount = 0;
         foreach ($drawn as $i => $card) {
             $tier = $getTier($card['rarity'] ?? null);
             if ($tier) $rareCount++;
             $cardsData[] = [
-                'id'        => $card['id'],
-                'isNew'     => $newCards[$card['id']] ?? true,
+                'id'         => $card['id'],
+                'isNew'      => $newCards[$card['id']] ?? true,
                 'rarityTier' => $tier,
+                'dropRate'   => $tier ? ($dropRates[$tier] ?? null) : null,
             ];
         }
     @endphp
@@ -143,6 +151,12 @@
                             @if($card['rarity'] ?? false)
                                 <span style="position: absolute; bottom: 10px; left: 10px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,0.7); color: white;">
                                     {{ $card['rarity'] }}
+                                </span>
+                            @endif
+                            @php $rate = $dropRates[$tier] ?? null; @endphp
+                            @if($rate)
+                                <span style="position: absolute; bottom: 10px; right: 10px; font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 6px; color: #fbbf24; background: rgba(0,0,0,0.75); border: 1px solid rgba(251,191,36,0.3); letter-spacing: 0.5px;">
+                                    {{ $rate }} drop
                                 </span>
                             @endif
                         </div>

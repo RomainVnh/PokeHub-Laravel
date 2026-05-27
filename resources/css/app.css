@@ -101,6 +101,15 @@
   opacity: 0.6;
 }
 
+[data-theme="light"] .edition-not-collected {
+  filter: grayscale(0.8) brightness(0.9);
+  opacity: 0.35;
+}
+[data-theme="light"] .edition-not-collected:hover {
+  filter: grayscale(0.4) brightness(0.95);
+  opacity: 0.6;
+}
+
 /* ── Reset & Base ─────────────────────────────────────────────────── */
 @layer base {
   html, body {
@@ -624,6 +633,16 @@ html, body {
   filter: grayscale(0.7) brightness(0.6);
   opacity: 0.7;
   transform: translateY(-2px) scale(1.01);
+}
+
+/* ── Uncollected editions (greyed out in encyclopedia) ────────────── */
+.edition-not-collected {
+  filter: grayscale(0.8) brightness(0.5);
+  opacity: 0.45;
+}
+.edition-not-collected:hover {
+  filter: grayscale(0.4) brightness(0.7);
+  opacity: 0.7;
 }
 
 /* ── Token display ───────────────────────────────────────────────── */

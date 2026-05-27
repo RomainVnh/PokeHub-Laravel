@@ -40,9 +40,20 @@ class SetController extends Controller
             $series[$set['series']][] = $set;
         }
 
+        // Collection progress per set for authenticated users
+        $collectionProgress = [];
+        if (Auth::check()) {
+            $collectionProgress = UserCard::where('user_id', Auth::id())
+                ->selectRaw('set_id, COUNT(DISTINCT card_id) as collected')
+                ->groupBy('set_id')
+                ->pluck('collected', 'set_id')
+                ->toArray();
+        }
+
         return view('encyclopedia', [
-            'sets'   => $sets,
-            'series' => $series,
+            'sets'               => $sets,
+            'series'             => $series,
+            'collectionProgress' => $collectionProgress,
         ]);
     }
 

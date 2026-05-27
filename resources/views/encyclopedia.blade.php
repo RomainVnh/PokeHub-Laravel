@@ -44,8 +44,14 @@
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
                         @foreach($serieSets as $set)
+                            @php
+                                $collected = $collectionProgress[$set['id']] ?? 0;
+                                $total     = $set['printedTotal'] ?: 1;
+                                $pct       = Auth::check() ? round(($collected / $total) * 100) : -1;
+                                $noCards   = Auth::check() && $collected === 0;
+                            @endphp
                             <div x-show="!search || '{{ strtolower(addslashes($set['name'])) }}'.includes(search.toLowerCase())"
-                                 class="edition-card group">
+                                 class="edition-card group {{ $noCards ? 'edition-not-collected' : '' }}">
                                 <div class="h-28 flex items-center justify-center p-4"
                                      style="background: linear-gradient(145deg, rgba(212,168,67,0.04) 0%, rgba(139,92,246,0.04) 100%);">
                                     <img src="{{ $set['images']['logo'] ?? '' }}"
@@ -58,6 +64,17 @@
                                     <p class="text-[11px]" style="color: var(--text-muted);">
                                         {{ \Carbon\Carbon::parse($set['releaseDate'])->format('Y') }} · {{ $set['printedTotal'] }} cartes
                                     </p>
+
+                                    {{-- Collection progress bar --}}
+                                    @auth
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex-1 h-1.5 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.08);">
+                                                <div class="h-full rounded-full transition-all" style="width: {{ $pct }}%; background: linear-gradient(90deg, var(--gold), #f59e0b);"></div>
+                                            </div>
+                                            <span class="text-[10px] font-bold whitespace-nowrap" style="color: {{ $pct > 0 ? 'var(--gold)' : 'var(--text-muted)' }};">{{ $collected }}/{{ $total }}</span>
+                                        </div>
+                                    @endauth
+
                                     <div class="flex gap-2 pt-1">
                                         <a href="{{ route('set.show', $set['id']) }}"
                                            class="flex-1 text-center text-[11px] font-bold rounded-lg py-2 transition-colors"

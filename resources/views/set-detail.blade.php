@@ -6,11 +6,18 @@
         {{-- ═══ LEFT — Main content ═══════════════════════════════════ --}}
         <div class="flex-1 overflow-y-auto" id="main-scroll">
 
-            {{-- ── Banner ─────────────────────────────────────────── --}}
+            {{-- ── Banner (edition-specific artwork) ────────────── --}}
+            @php
+                // Pick a hero card for the banner — favour a rare/evolved card near index 5
+                $heroIdx = min(4, max(0, count($cards) - 1));
+                $heroBanner = $cards[$heroIdx]['images']['large']
+                           ?? $cards[$heroIdx]['images']['small']
+                           ?? asset('images/banniere.jpg');
+            @endphp
             <div class="relative overflow-hidden" style="height: 280px; background: var(--bg-base);">
-                <img src="{{ asset('images/banniere.jpg') }}" alt="Banner"
+                <img src="{{ $heroBanner }}" alt="Banner"
                      class="absolute inset-0 w-full h-full object-cover"
-                     style="opacity: 0.35; filter: blur(1px);" />
+                     style="opacity: 0.35; filter: blur(6px); transform: scale(1.15);" />
                 <div class="absolute inset-0"
                      style="background: linear-gradient(to top, var(--bg-base) 0%, rgba(10,12,16,0.5) 50%, rgba(10,12,16,0.2) 100%);"></div>
 
@@ -141,8 +148,14 @@
             <div class="px-5 py-5">
                 <div class="set-card">
                     <div class="relative h-28 overflow-hidden">
-                        <img src="{{ asset('images/banniere.jpg') }}" alt=""
-                             class="w-full h-full object-cover" style="opacity: 0.5;" />
+                        @php
+                            $sideIdx = min(9, max(0, count($cards) - 1));
+                            $sideImg = $cards[$sideIdx]['images']['large']
+                                    ?? $cards[$sideIdx]['images']['small']
+                                    ?? asset('images/banniere.jpg');
+                        @endphp
+                        <img src="{{ $sideImg }}" alt=""
+                             class="w-full h-full object-cover" style="opacity: 0.5; filter: blur(2px); transform: scale(1.2);" />
                         <div class="absolute inset-0"
                              style="background: linear-gradient(to top, var(--bg-elevated) 10%, transparent 100%);"></div>
                     </div>
