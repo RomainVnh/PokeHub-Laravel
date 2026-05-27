@@ -29,12 +29,12 @@
         <div class="pt-5 pb-5 flex justify-center">
             <a href="/" class="block">
                 <img x-show="!collapsed" x-transition.opacity
-                     src="{{ asset('images/logopokemonhub.png') }}"
-                     alt="PokemonHub"
+                     src="{{ asset('images/logopokehub_2.png') }}"
+                     alt="PokeHub"
                      class="h-28 object-contain" />
                 <img x-show="collapsed"
-                     src="{{ asset('images/logo_réduit.png') }}"
-                     alt="PokemonHub"
+                     src="{{ asset('images/logopokehub_2.png') }}"
+                     alt="PokeHub"
                      style="height: 64px; width: 64px; object-fit: contain;" />
             </a>
         </div>

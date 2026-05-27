@@ -29,18 +29,11 @@ RUN composer dump-autoload --optimize
 # Build frontend assets
 RUN npm run build
 
-# Cache views only (config/routes need runtime env vars from Railway)
-RUN php artisan view:cache || true
-
 # Create SQLite database
 RUN mkdir -p database && touch database/database.sqlite
 
 # Expose port
-EXPOSE ${PORT:-3002}
+EXPOSE 3002
 
-# Start command: clear stale config cache, cache config with runtime env vars, migrate, then serve
-CMD php artisan config:clear && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan migrate --force && \
-    php artisan serve --host=0.0.0.0 --port=${PORT:-3002}
+# Start the application
+CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-3002}"]

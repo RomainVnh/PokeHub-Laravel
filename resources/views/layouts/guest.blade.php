@@ -29,7 +29,7 @@
                 {{-- Logo --}}
                 <div class="mb-10">
                     <a href="/">
-                        <img src="{{ asset('images/logopokemonhub.png') }}" alt="PokemonHub" style="height: 160px; object-fit: contain;" />
+                        <img src="{{ asset('images/logopokehub_2.png') }}" alt="PokeHub" style="height: 160px; object-fit: contain;" />
                     </a>
                 </div>
 
