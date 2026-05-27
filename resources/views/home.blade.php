@@ -116,6 +116,97 @@
             </div>
         </section>
 
+        {{-- ═══ Actualités ══════════════════════════════════════════ --}}
+        <section class="py-14 px-8" style="border-bottom: 1px solid var(--border);">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-end justify-between mb-8">
+                    <div>
+                        <span class="label-xs block mb-2" style="color: white;">Communauté</span>
+                        <h2 class="text-2xl font-extrabold text-white">Actualités</h2>
+                    </div>
+                </div>
+
+                @php
+                    $articles = [
+                        [
+                            'image'    => asset('images/banniere2.webp'),
+                            'tag'      => 'Nouvelle édition',
+                            'tagColor' => 'var(--gold)',
+                            'title'    => 'Destinées de Paldea 4.5 — Les cartes dévoilées',
+                            'excerpt'  => 'La nouvelle extension promet des illustrations inédites et de nouvelles mécaniques ex. Découvrez les premières cartes révélées et les taux de drop estimés.',
+                            'date'     => '24 mai 2026',
+                            'author'   => 'Équipe PokeHub',
+                            'icon'     => 'M234.5 5.7c13.9-5.3 29.7-5.3 43.1 0l192 73.7C495.2 89.6 512 114.2 512 141.8V370.2c0 27.6-16.8 52.2-42.4 62.4l-192 73.7c-13.9 5.3-29.7 5.3-43.1 0l-192-73.7C16.8 422.4 0 397.8 0 370.2V141.8c0-27.6 16.8-52.2 42.4-62.4l192-73.7z',
+                            'iconVb'   => '512',
+                        ],
+                        [
+                            'image'    => asset('images/boosters.jpg'),
+                            'tag'      => 'Guide',
+                            'tagColor' => 'var(--blue)',
+                            'title'    => '5 astuces pour optimiser vos ouvertures de boosters',
+                            'excerpt'  => 'Maximisez vos chances d\'obtenir des cartes rares grâce à nos conseils. Comprendre les taux de drop et les multi-rares pour mieux appréhender chaque ouverture.',
+                            'date'     => '20 mai 2026',
+                            'author'   => 'Équipe PokeHub',
+                            'icon'     => 'M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288H175.5L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.4-20.8-29.6-20.8H272.5L349.4 44.6z',
+                            'iconVb'   => '448',
+                        ],
+                        [
+                            'image'    => asset('images/rayquaza.jpg'),
+                            'tag'      => 'Collection',
+                            'tagColor' => 'var(--green)',
+                            'title'    => 'Les 10 cartes les plus recherchées en 2026',
+                            'excerpt'  => 'De Dracaufeu à Rayquaza, découvrez le classement des cartes les plus convoitées par les collectionneurs cette année et leur estimation de valeur.',
+                            'date'     => '15 mai 2026',
+                            'author'   => 'Équipe PokeHub',
+                            'icon'     => 'M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329l104.2-103.1c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L388.2 150.3 316.9 18z',
+                            'iconVb'   => '576',
+                        ],
+                    ];
+                @endphp
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach($articles as $i => $article)
+                        <article class="news-card group rounded-2xl overflow-hidden"
+                                 style="background: var(--bg-card); border: 1px solid var(--border); transition: border-color 0.3s, transform 0.3s;"
+                                 onmouseover="this.style.borderColor='rgba(255,255,255,0.12)'; this.style.transform='translateY(-4px)'"
+                                 onmouseout="this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'">
+
+                            {{-- Image --}}
+                            <div class="relative h-44 overflow-hidden">
+                                <img src="{{ $article['image'] }}" alt=""
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                     style="filter: brightness(0.7) saturate(1.1);" />
+                                <div class="absolute inset-0" style="background: linear-gradient(180deg, transparent 40%, var(--bg-card) 100%);"></div>
+                                <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full"
+                                      style="background: rgba(0,0,0,0.6); color: {{ $article['tagColor'] }}; backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.08);">
+                                    {{ $article['tag'] }}
+                                </span>
+                            </div>
+
+                            {{-- Content --}}
+                            <div class="p-5 space-y-3">
+                                <h3 class="text-[15px] font-bold leading-snug line-clamp-2" style="color: var(--text-primary);">
+                                    {{ $article['title'] }}
+                                </h3>
+                                <p class="text-[13px] leading-relaxed line-clamp-3" style="color: var(--text-secondary);">
+                                    {{ $article['excerpt'] }}
+                                </p>
+                                <div class="flex items-center justify-between pt-2" style="border-top: 1px solid var(--border);">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background: var(--accent-bg);">
+                                            <svg class="w-3 h-3" style="color: var(--text-muted);" fill="currentColor" viewBox="0 0 {{ $article['iconVb'] }} 512"><path d="{{ $article['icon'] }}"/></svg>
+                                        </div>
+                                        <span class="text-[11px] font-medium" style="color: var(--text-muted);">{{ $article['author'] }}</span>
+                                    </div>
+                                    <span class="text-[11px]" style="color: var(--text-muted);">{{ $article['date'] }}</span>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
         {{-- ═══ CTA ══════════════════════════════════════════════════ --}}
         <section class="py-14 px-8">
             <div class="max-w-3xl mx-auto text-center rounded-2xl overflow-hidden relative py-14 px-8"
