@@ -27,21 +27,21 @@
         style="background: var(--bg-primary); border-right: 1px solid var(--border);"
     >
         {{-- Logo --}}
-        <div class="pt-6 pb-4 flex justify-center px-4">
+        <div class="pt-4 pb-2 flex justify-center px-4">
             <a href="/" class="block">
                 <img x-show="!collapsed" x-transition.opacity
                      src="{{ asset('images/logopokehub_2.png') }}"
                      alt="PokeHub"
-                     class="h-36 object-contain" />
+                     class="h-28 object-contain" />
                 <img x-show="collapsed"
                      src="{{ asset('images/logoreduit_transparent.png') }}"
                      alt="PokeHub"
-                     style="height: 48px; width: 48px; object-fit: contain;" />
+                     style="height: 40px; width: 40px; object-fit: contain;" />
             </a>
         </div>
 
         {{-- Nav --}}
-        <nav class="flex-1 px-3 pt-2 flex flex-col justify-center gap-1.5">
+        <nav class="flex-1 px-3 pt-1 flex flex-col justify-center gap-1">
             @php
                 $navItems = [
                     ['href' => '/',             'label' => 'Accueil',       'vb' => '576', 'icon' => 'M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V360c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32V472c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z'],
@@ -53,7 +53,6 @@
                 ];
                 if (Auth::check()) {
                     $navItems[] = ['href' => '/collection', 'label' => 'Collection', 'vb' => '512', 'icon' => 'M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM16 232v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V232c0-13.3-10.7-24-24-24H40c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V392c0-13.3-10.7-24-24-24H40z'];
-                    $navItems[] = ['href' => '/profile', 'label' => 'Profil', 'vb' => '448', 'icon' => 'M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z'];
                 }
                 $currentPath = '/'.ltrim(request()->path(), '/');
             @endphp
@@ -75,12 +74,12 @@
         </nav>
 
         {{-- Bottom --}}
-        <div class="px-3 pb-5 flex flex-col gap-1.5">
-            <div class="separator mx-2 mb-3"></div>
+        <div class="px-3 pb-3 flex flex-col gap-1">
+            <div class="separator mx-2 mb-2"></div>
 
             {{-- Token display --}}
             @auth
-                <div class="token-display mx-1 mb-2" x-show="!collapsed">
+                <div class="token-display mx-1 mb-1" x-show="!collapsed">
                     <div class="token-icon">
                         <svg fill="currentColor" viewBox="0 0 512 512">
                             <path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80zM224.5 161.7c6.8-.4 13.7-.7 20.8-.9C266.3 142.3 304.6 128 352 128c38 0 72.6 9.4 99.7 24.8C492.3 170.5 512 192 512 214.7V256c0 46-104.3 80-192 80c-14.1 0-27.8-.8-41-2.2c1.3-5 2.4-10.2 3.3-15.5C364.6 307.9 432 276.8 432 256c0-13.3-16.7-25.6-44.1-35C380.1 236.4 368 256 352 272c-5.2 5.2-10.8 10-16.8 14.3C393.8 296.8 432 280 432 256v-42.7c0-8.3-7.2-17.4-20-25.9c-15-10-35.6-18-60.3-23.2C327.6 155.5 296 152 264 154.3c-11.7 .8-23 2.2-33.5 4V161.7zM96 256c0-53 43-96 96-96s96 43 96 96-43 96-96 96-96-43-96-96zm96-32a32 32 0 1 0 0 64 32 32 0 1 0 0-64z"/>
@@ -92,7 +91,7 @@
                     </div>
                 </div>
                 {{-- Collapsed token --}}
-                <div x-show="collapsed" class="flex justify-center mb-2">
+                <div x-show="collapsed" class="flex justify-center mb-1">
                     <div class="token-icon" title="1 250 PokéTokens" style="width: 32px; height: 32px;">
                         <svg fill="currentColor" viewBox="0 0 512 512" style="width: 16px; height: 16px;">
                             <path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80zM224.5 161.7c6.8-.4 13.7-.7 20.8-.9C266.3 142.3 304.6 128 352 128c38 0 72.6 9.4 99.7 24.8C492.3 170.5 512 192 512 214.7V256c0 46-104.3 80-192 80c-14.1 0-27.8-.8-41-2.2c1.3-5 2.4-10.2 3.3-15.5C364.6 307.9 432 276.8 432 256c0-13.3-16.7-25.6-44.1-35C380.1 236.4 368 256 352 272c-5.2 5.2-10.8 10-16.8 14.3C393.8 296.8 432 280 432 256v-42.7c0-8.3-7.2-17.4-20-25.9c-15-10-35.6-18-60.3-23.2C327.6 155.5 296 152 264 154.3c-11.7 .8-23 2.2-33.5 4V161.7zM96 256c0-53 43-96 96-96s96 43 96 96-43 96-96 96-96-43-96-96zm96-32a32 32 0 1 0 0 64 32 32 0 1 0 0-64z"/>
@@ -102,13 +101,13 @@
             @endauth
 
             @auth
-                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-3 rounded-xl transition-all" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;">
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;">
                     @if(auth()->user()->avatar)
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background: var(--bg-card);">
-                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-7 h-7 object-contain" />
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background: var(--bg-card);">
+                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-6 h-6 object-contain" />
                         </div>
                     @else
-                        <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold" style="background: var(--accent); color: var(--text-inverse);">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold" style="background: var(--accent); color: var(--text-inverse);">
                             {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
                         </div>
                     @endif
@@ -120,8 +119,7 @@
                 <form method="POST" action="{{ route('logout') }}" x-show="!collapsed">
                     @csrf
                     <button type="submit" class="nav-link w-full text-xs" style="color: var(--text-muted);">
-
-                        <svg class="w-[16px] h-[16px] flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
+                        <svg class="w-[14px] h-[14px] flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
                             <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
                         </svg>
                         <span class="whitespace-nowrap">Déconnexion</span>
@@ -129,7 +127,6 @@
                 </form>
             @else
                 <a href="{{ route('login') }}" class="nav-link" style="color: var(--text-secondary);">
-
                     <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
                         <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/>
                     </svg>
@@ -137,28 +134,27 @@
                 </a>
             @endauth
 
-            {{-- Theme toggle --}}
-            <div class="flex items-center justify-center gap-2.5 w-full rounded-lg mt-2 px-3 py-1"
-                 style="color: var(--text-muted);"
-                 @click="(() => {
-                    const html = document.documentElement;
-                    const isLight = html.getAttribute('data-theme') === 'light';
-                    if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
-                    else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
-                 })()">
-                <div class="theme-toggle" :style="collapsed ? 'width:36px;height:20px' : ''" title="Changer de thème"></div>
-                {{-- Moon icon --}}
-                <svg x-show="!collapsed" class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 384 512">
-                    <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
-                </svg>
+            {{-- Theme toggle + Collapse --}}
+            <div class="flex items-center justify-between mt-1">
+                <div class="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-lg"
+                     style="color: var(--text-muted);"
+                     @click="(() => {
+                        const html = document.documentElement;
+                        const isLight = html.getAttribute('data-theme') === 'light';
+                        if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
+                        else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
+                     })()">
+                    <div class="theme-toggle" :style="collapsed ? 'width:36px;height:20px' : ''" title="Changer de thème"></div>
+                    <svg x-show="!collapsed" class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 384 512">
+                        <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
+                    </svg>
+                </div>
+                <button @click="collapsed = !collapsed"
+                        class="flex items-center justify-center w-8 h-8 rounded-lg transition-all" style="color: var(--text-muted); opacity: 0.5;">
+                    <svg x-show="!collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                    <svg x-show="collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                </button>
             </div>
-
-            <button @click="collapsed = !collapsed"
-                    class="flex items-center justify-center w-full h-9 rounded-lg mt-1 transition-all" style="color: var(--text-muted); opacity: 0.5;">
-
-                <svg x-show="!collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
-                <svg x-show="collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-            </button>
         </div>
     </aside>
 
