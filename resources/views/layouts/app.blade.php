@@ -33,7 +33,7 @@
                      alt="PokeHub"
                      class="h-36 object-contain" />
                 <img x-show="collapsed"
-                     src="{{ asset('images/logopokehub_2.png') }}"
+                     src="{{ asset('images/logo_réduit.png') }}"
                      alt="PokeHub"
                      style="height: 48px; width: 48px; object-fit: contain;" />
             </a>
