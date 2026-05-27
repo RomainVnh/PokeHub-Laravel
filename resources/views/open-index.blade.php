@@ -4,7 +4,7 @@
     <div class="min-h-full" x-data="{ search: '' }">
 
         <div class="page-hero px-10 pt-10 pb-8" style="border-bottom: 1px solid var(--border);">
-            <img src="{{ asset('images/rayquaza.jpg') }}" alt="" class="page-hero-bg" />
+            <img src="{{ asset('images/bannieredarkrai.webp') }}" alt="" class="page-hero-bg" />
             <div class="page-hero-overlay"></div>
             <div class="relative z-10">
             <span class="label-xs block mb-3" style="color: var(--gold);">Ouvrir</span>

@@ -47,11 +47,19 @@ class PokemonTcgService
             $symbolUrl = "https://assets.tcgdex.net/univ/{$raw['serie']['id']}/{$raw['id']}/symbol.png";
         }
 
+        // Build logo URL: prefer explicit, else construct from serie path
+        $logoUrl = '';
+        if (isset($raw['logo'])) {
+            $logoUrl = $raw['logo'] . '.png';
+        } elseif (isset($raw['serie']['id'])) {
+            $logoUrl = "https://assets.tcgdex.net/en/{$raw['serie']['id']}/{$raw['id']}/logo.png";
+        }
+
         return [
             'id'           => $raw['id'] ?? '',
             'name'         => $raw['name'] ?? '',
             'images'       => [
-                'logo'   => isset($raw['logo']) ? $raw['logo'] . '.png' : '',
+                'logo'   => $logoUrl,
                 'symbol' => $symbolUrl,
             ],
             'series'       => $serieName ?? $raw['serie']['name'] ?? 'Unknown',
