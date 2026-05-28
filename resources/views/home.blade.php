@@ -187,6 +187,54 @@
             </div>
         </section>
 
+        {{-- ═══ Premium Booster ═══════════════════════════════════════ --}}
+        <section class="py-14 px-8" style="border-bottom: 1px solid var(--border);">
+            <div class="max-w-5xl mx-auto">
+                <div class="relative rounded-2xl overflow-hidden p-8 md:p-12"
+                     style="background: linear-gradient(135deg, rgba(163,130,255,0.08) 0%, rgba(212,168,67,0.08) 50%, rgba(163,130,255,0.04) 100%); border: 1px solid rgba(163,130,255,0.2);">
+                    <div class="absolute top-0 left-0 w-full h-px" style="background: linear-gradient(90deg, transparent, #a382ff, #d4a843, transparent);"></div>
+
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="flex-shrink-0">
+                            <div class="w-20 h-20 rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, #a382ff, #d4a843); box-shadow: 0 8px 32px rgba(163,130,255,0.3);">
+                                <svg class="w-10 h-10" fill="white" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8 416.2 508.3c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L380.9 150.3 316.9 18z"/></svg>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 text-center md:text-left">
+                            <span class="label-xs block mb-2" style="color: #a382ff;">Nouveau</span>
+                            <h2 class="text-2xl font-extrabold mb-3" style="color: var(--text-primary);">Boosters Premium</h2>
+                            <p class="text-sm leading-relaxed mb-5" style="color: var(--text-secondary);">
+                                Ouvre un booster avec des taux de drop boostés et au moins une carte Ultra Rare, EX ou Full Art garantie. 1 ouverture gratuite par jour ou 500 PokéTokens.
+                            </p>
+
+                            <div class="flex flex-wrap items-center gap-3 justify-center md:justify-start mb-6">
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold" style="background: rgba(163,130,255,0.12); color: #a382ff;">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                                    1 ultra rare garantie
+                                </div>
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold" style="background: rgba(212,168,67,0.12); color: #d4a843;">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                                    Taux boostés x5
+                                </div>
+                                <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold" style="background: rgba(34,197,94,0.12); color: #22c55e;">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                                    1 gratuit / jour
+                                </div>
+                            </div>
+
+                            <a href="{{ route('open.index') }}" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all"
+                               style="background: linear-gradient(135deg, #a382ff, #d4a843); color: white;"
+                               onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8 416.2 508.3c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L380.9 150.3 316.9 18z"/></svg>
+                                Ouvrir un Booster Premium
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {{-- ═══ Stats ═════════════════════════════════════════════════ --}}
         <section class="py-14 px-8" style="border-bottom: 1px solid var(--border);">
             <div class="max-w-5xl mx-auto grid grid-cols-3 gap-6">
