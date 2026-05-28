@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\CollectionController;
 use App\Models\UserCard;
 use App\Services\PokemonTcgService;
 use Illuminate\Support\Facades\Auth;
@@ -189,6 +190,8 @@ class SetController extends Controller
 
         if ($canFreeOpen) {
             $user->update(['last_premium_booster_at' => now()]);
+        } else {
+            $user->decrement('poketokens', 500);
         }
 
         $newCards = $this->trackDrawnCards($drawn, $setId);

@@ -302,9 +302,9 @@ class PokemonTcgService
      * Each rare slot rolls independently:
      *   - 60% : Rare / Rare Holo
      *   - 25% : downgrade (uncommon)
-     *   - 10% : Ultra Rare
-     *   - 4%  : Illustration Rare
-     *   - 1%  : Secret Rare
+     *   - 13.78% : Ultra Rare
+     *   - 1.14%  : Illustration Rare
+     *   - 0.29%  : Secret Rare
      */
     public function drawBoosterCards(array $cards, int $count = 5): array
     {
@@ -332,14 +332,14 @@ class PokemonTcgService
         $rollRare = function () use ($pick, $tiers) {
             $roll = mt_rand(1, 10000);
 
-            if ($roll <= 30 && count($tiers['secret']) > 0) {
-                return $pick($tiers['secret']);         // 0.3%
-            } elseif ($roll <= 150 && count($tiers['illustration']) > 0) {
-                return $pick($tiers['illustration']);    // 1.2%
-            } elseif ($roll <= 1600 && count($tiers['ultra']) > 0) {
-                return $pick($tiers['ultra']);           // 14.5% (+10%)
+            if ($roll <= 29 && count($tiers['secret']) > 0) {
+                return $pick($tiers['secret']);         // 0.29%
+            } elseif ($roll <= 143 && count($tiers['illustration']) > 0) {
+                return $pick($tiers['illustration']);    // 1.14%
+            } elseif ($roll <= 1521 && count($tiers['ultra']) > 0) {
+                return $pick($tiers['ultra']);           // 13.78%
             } elseif (count($tiers['rare']) > 0) {
-                return $pick($tiers['rare']);            // ~60%
+                return $pick($tiers['rare']);
             } else {
                 return $pick($tiers['uncommon']);
             }
@@ -382,7 +382,7 @@ class PokemonTcgService
      * much higher multi-rare and top-tier rates.
      *
      * Structure: 1 uncommon + 1 rare + 3 premium rare slots
-     * Each premium slot: 30% ultra, 15% illustration, 5% secret, 50% rare holo
+     * Each premium slot: 28.8% ultra, 14.4% illustration, 4.8% secret, 52% rare holo
      * Multi-rare: always at least 3 rare slots, up to 5
      */
     public function drawPremiumBoosterCards(array $cards, int $count = 5): array
@@ -411,14 +411,14 @@ class PokemonTcgService
         $rollPremiumRare = function () use ($pick, $tiers) {
             $roll = mt_rand(1, 10000);
 
-            if ($roll <= 500 && count($tiers['secret']) > 0) {
-                return $pick($tiers['secret']);         // 5%
-            } elseif ($roll <= 2000 && count($tiers['illustration']) > 0) {
-                return $pick($tiers['illustration']);    // 15%
-            } elseif ($roll <= 5000 && count($tiers['ultra']) > 0) {
-                return $pick($tiers['ultra']);           // 30%
+            if ($roll <= 480 && count($tiers['secret']) > 0) {
+                return $pick($tiers['secret']);         // 4.8%
+            } elseif ($roll <= 1920 && count($tiers['illustration']) > 0) {
+                return $pick($tiers['illustration']);    // 14.4%
+            } elseif ($roll <= 4800 && count($tiers['ultra']) > 0) {
+                return $pick($tiers['ultra']);           // 28.8%
             } elseif (count($tiers['rare']) > 0) {
-                return $pick($tiers['rare']);            // 50%
+                return $pick($tiers['rare']);
             } else {
                 return $pick($tiers['uncommon']);
             }

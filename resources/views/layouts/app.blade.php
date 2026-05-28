@@ -17,13 +17,47 @@
         })();
     </script>
 </head>
-<body class="h-full flex overflow-hidden" style="font-family: 'Inter', sans-serif;">
+<body class="h-full overflow-hidden" style="font-family: 'Inter', sans-serif;"
+      x-data="{
+          mobileMenu: false,
+          collapsed: false,
+          forceSidebar: localStorage.getItem('pokehub_force_sidebar') === 'true',
+          settingsOpen: false,
+          toggleForceSidebar() {
+              this.forceSidebar = !this.forceSidebar;
+              localStorage.setItem('pokehub_force_sidebar', this.forceSidebar);
+          }
+      }">
+
+    <div class="h-full flex">
+
+    {{-- ═══ Mobile top bar (burger) ════════════════════════════════════ --}}
+    <header class="mobile-topbar" :class="forceSidebar ? 'hidden' : ''"
+            style="background: var(--bg-primary); border-bottom: 1px solid var(--border);">
+        <button @click="mobileMenu = !mobileMenu" class="burger-btn" aria-label="Menu">
+            <span class="burger-line" :class="mobileMenu && 'open'"></span>
+            <span class="burger-line" :class="mobileMenu && 'open'"></span>
+            <span class="burger-line" :class="mobileMenu && 'open'"></span>
+        </button>
+        <a href="/" class="flex items-center">
+            <img src="{{ asset('images/logopokehub_2.png') }}" alt="PokeHub" class="h-8 object-contain" />
+        </a>
+        <div class="w-10"></div>
+    </header>
+
+    {{-- ═══ Mobile overlay ═════════════════════════════════════════════ --}}
+    <div x-show="mobileMenu" x-transition.opacity.duration.200ms
+         @click="mobileMenu = false"
+         class="mobile-overlay" :class="forceSidebar ? 'hidden' : ''"></div>
 
     {{-- ═══ Sidebar ═══════════════════════════════════════════════════ --}}
     <aside
-        x-data="{ collapsed: false }"
-        :class="collapsed ? 'w-[88px]' : 'w-[260px]'"
-        class="flex-shrink-0 h-full flex flex-col transition-all duration-300 overflow-hidden"
+        :class="[
+            collapsed ? 'w-[88px]' : 'w-[260px]',
+            mobileMenu ? 'mobile-sidebar-open' : '',
+            forceSidebar ? 'sidebar-force' : 'sidebar-responsive'
+        ]"
+        class="sidebar-main flex-shrink-0 h-full flex flex-col transition-all duration-300 overflow-hidden"
         style="background: var(--bg-primary); border-right: 1px solid var(--border);"
     >
         {{-- Logo --}}
@@ -61,7 +95,7 @@
                 @php
                     $active = ($item['href'] === '/' && $currentPath === '/') || ($item['href'] !== '/' && str_starts_with($currentPath, $item['href']));
                 @endphp
-                <a href="{{ $item['href'] }}" class="nav-link {{ $active ? 'active' : '' }}">
+                <a href="{{ $item['href'] }}" class="nav-link {{ $active ? 'active' : '' }}" @click="mobileMenu = false">
                     <svg class="w-5 h-5 flex-shrink-0 nav-icon" fill="currentColor" viewBox="0 0 {{ $item['vb'] }} 512">
                         <path d="{{ $item['icon'] }}"/>
                     </svg>
@@ -90,7 +124,6 @@
                         <p class="text-sm font-bold" style="color: #d4a843;">{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }}</p>
                     </div>
                 </div>
-                {{-- Collapsed token --}}
                 <div x-show="collapsed" class="flex justify-center mb-1">
                     <div class="token-icon" title="{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }} PokéTokens" style="width: 32px; height: 32px;">
                         <svg fill="currentColor" viewBox="0 0 512 512" style="width: 16px; height: 16px;">
@@ -101,7 +134,7 @@
             @endauth
 
             @auth
-                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;">
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;" @click="mobileMenu = false">
                     @if(auth()->user()->avatar)
                         <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background: var(--bg-card);">
                             <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-6 h-6 object-contain" />
@@ -126,7 +159,7 @@
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="nav-link" style="color: var(--text-secondary);">
+                <a href="{{ route('login') }}" class="nav-link" style="color: var(--text-secondary);" @click="mobileMenu = false">
                     <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
                         <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/>
                     </svg>
@@ -134,7 +167,7 @@
                 </a>
             @endauth
 
-            {{-- Theme toggle + Collapse --}}
+            {{-- Theme toggle + Settings + Collapse --}}
             <div class="flex items-center justify-between mt-1">
                 <div class="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-lg"
                      style="color: var(--text-muted);"
@@ -149,22 +182,69 @@
                         <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
                     </svg>
                 </div>
-                <button @click="collapsed = !collapsed"
-                        class="flex items-center justify-center w-8 h-8 rounded-lg transition-all" style="color: var(--text-muted); opacity: 0.5;">
-                    <svg x-show="!collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
-                    <svg x-show="collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-                </button>
+                <div class="flex items-center gap-1">
+                    {{-- Settings button --}}
+                    <button @click="settingsOpen = !settingsOpen" x-show="!collapsed"
+                            class="flex items-center justify-center w-8 h-8 rounded-lg transition-all" style="color: var(--text-muted); opacity: 0.5;">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>
+                    </button>
+                    {{-- Collapse button --}}
+                    <button @click="collapsed = !collapsed"
+                            class="sidebar-collapse-btn flex items-center justify-center w-8 h-8 rounded-lg transition-all" style="color: var(--text-muted); opacity: 0.5;">
+                        <svg x-show="!collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
+                        <svg x-show="collapsed" class="w-4 h-4" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+                    </button>
+                </div>
             </div>
         </div>
     </aside>
 
     {{-- ═══ Main ══════════════════════════════════════════════════════ --}}
-    <main class="flex-1 overflow-y-auto">
+    <main class="flex-1 overflow-y-auto main-content">
         {{ $slot }}
     </main>
 
+    </div>
+
+    {{-- ═══ Settings modal ═════════════════════════════════════════════ --}}
+    <div x-show="settingsOpen" x-transition.opacity
+         @click.self="settingsOpen = false" @keydown.escape.window="settingsOpen = false"
+         class="fixed inset-0 z-50 flex items-center justify-center"
+         style="background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);">
+        <div x-show="settingsOpen" x-transition.scale.origin.center
+             class="relative w-full max-w-sm mx-4 rounded-2xl overflow-hidden"
+             style="background: var(--bg-card); border: 1px solid var(--border);">
+            <div class="p-6">
+                <h3 class="text-lg font-extrabold mb-5" style="color: var(--text-primary);">Paramètres</h3>
+
+                <div class="space-y-4">
+                    <div class="p-4 rounded-xl" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                        <p class="text-xs font-bold mb-1" style="color: var(--text-muted);">Accessibilité</p>
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1 pr-4">
+                                <p class="text-sm font-semibold" style="color: var(--text-primary);">Barre latérale fixe</p>
+                                <p class="text-[11px] mt-0.5" style="color: var(--text-muted);">Conserver la sidebar même sur mobile au lieu du menu burger</p>
+                            </div>
+                            <button @click="toggleForceSidebar()"
+                                    class="relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-200 cursor-pointer"
+                                    :style="forceSidebar ? 'background: #22c55e' : 'background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15)'">
+                                <span class="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white shadow transition-all duration-200"
+                                      :style="forceSidebar ? 'left: calc(100% - 20px)' : 'left: 3px'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button @click="settingsOpen = false"
+                        class="btn btn-surface w-full mt-5">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
     {{-- ═══ Toast notification ═══════════════════════════════════════ --}}
-    @if(session('login_success'))
+    @if(session('login_success') || session('success'))
         <div x-data="{ show: true }" x-show="show" x-transition.opacity
              x-init="setTimeout(() => show = false, 3500)"
              class="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl"
@@ -172,7 +252,19 @@
             <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
                 <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
             </svg>
-            <span class="text-sm font-bold">{{ session('login_success') }}</span>
+            <span class="text-sm font-bold">{{ session('login_success') ?? session('success') }}</span>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div x-data="{ show: true }" x-show="show" x-transition.opacity
+             x-init="setTimeout(() => show = false, 4000)"
+             class="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl"
+             style="background: linear-gradient(135deg, rgba(239,68,68,0.95), rgba(220,38,38,0.95)); color: white; backdrop-filter: blur(12px);">
+            <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
+                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+            </svg>
+            <span class="text-sm font-bold">{{ session('error') }}</span>
         </div>
     @endif
 

@@ -953,3 +953,147 @@ main.flex-1 {
   display: flex;
   flex-direction: column;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile-first layout
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Mobile top bar ──────────────────────────────────────────────── */
+.mobile-topbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+/* ── Burger button ───────────────────────────────────────────────── */
+.burger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 10px 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.burger-line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+.burger-line.open:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.burger-line.open:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.burger-line.open:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Mobile overlay ──────────────────────────────────────────────── */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Desktop: sidebar always visible ─────────────────────────────── */
+.sidebar-main.sidebar-responsive,
+.sidebar-main.sidebar-force {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  /* Show mobile topbar */
+  .mobile-topbar {
+    display: flex;
+  }
+  .mobile-topbar.hidden {
+    display: none;
+  }
+
+  /* Mobile overlay */
+  .mobile-overlay {
+    display: block;
+  }
+  .mobile-overlay.hidden {
+    display: none;
+  }
+
+  /* Responsive sidebar: off-canvas on mobile */
+  .sidebar-main.sidebar-responsive {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 38;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 260px !important;
+  }
+  .sidebar-main.sidebar-responsive.mobile-sidebar-open {
+    transform: translateX(0);
+  }
+
+  /* Force sidebar: keep visible (accessibility option) */
+  .sidebar-main.sidebar-force {
+    width: 220px !important;
+  }
+
+  /* Hide collapse button on mobile */
+  .sidebar-collapse-btn {
+    display: none !important;
+  }
+
+  /* Main content: add top padding for topbar */
+  .main-content {
+    padding-top: 56px;
+  }
+  .sidebar-force ~ .main-content {
+    padding-top: 0;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   RESPONSIVE — Page content
+   ══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Booster cards: vertical scroll on mobile handled by Alpine */
+  .booster-cards-desktop {
+    display: flex;
+  }
+  .booster-cards-mobile {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .booster-cards-mobile {
+    display: none !important;
+  }
+}
+@media (max-width: 768px) {
+  .booster-cards-desktop {
+    display: none !important;
+  }
+  .booster-cards-mobile {
+    display: block;
+  }
+}

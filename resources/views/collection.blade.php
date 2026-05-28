@@ -5,7 +5,19 @@
         search: '',
         filterSet: 'all',
         filterRarity: 'all',
-        sortBy: 'recent'
+        sortBy: 'recent',
+        sellModal: false,
+        sellCard: null,
+        sellQty: 1,
+        sellMaxQty: 0,
+        sellPrice: 0,
+        openSell(card) {
+            this.sellCard = card;
+            this.sellMaxQty = card.quantity - 1;
+            this.sellQty = 1;
+            this.sellPrice = card.sellPrice;
+            this.sellModal = true;
+        }
     }">
 
         {{-- ── Header ─────────────────────────────────────────────── --}}
@@ -95,7 +107,8 @@
                                     }
                                 @endphp
                                 <div x-show="(filterRarity === 'all' || '{{ addslashes($card['rarity'] ?? '') }}' === filterRarity) && (!search || '{{ strtolower(addslashes($card['card_name'])) }}'.includes(search.toLowerCase()))"
-                                     class="relative group">
+                                     class="relative group {{ $card['quantity'] > 1 ? 'cursor-pointer' : '' }}"
+                                     @if($card['quantity'] > 1) @click="openSell(@js($card))" @endif>
                                     <div class="card-item rounded-lg overflow-hidden border transition-all duration-200"
                                          style="border-color: var(--border); background: var(--bg-card);">
                                         <img src="{{ $imgUrl }}"
@@ -117,6 +130,77 @@
                     </div>
                 @endforeach
             @endif
+        </div>
+
+        {{-- ── Sell card popup ─────────────────────────────────────── --}}
+        <div x-show="sellModal" x-transition.opacity x-cloak
+             @click.self="sellModal = false" @keydown.escape.window="sellModal = false"
+             class="fixed inset-0 z-50 flex items-center justify-center"
+             style="background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);">
+            <div x-show="sellModal" x-transition.scale.origin.center
+                 class="relative w-full max-w-sm mx-4 rounded-2xl overflow-hidden"
+                 style="background: var(--bg-card); border: 1px solid rgba(212,168,67,0.3);">
+                <div class="h-1.5" style="background: linear-gradient(90deg, #d4a843, #f59e0b);"></div>
+                <div class="p-6">
+                    <template x-if="sellCard">
+                        <div>
+                            <div class="flex gap-4 mb-5">
+                                <img :src="sellCard.image_url" alt=""
+                                     class="w-24 h-[134px] rounded-xl object-cover flex-shrink-0"
+                                     style="box-shadow: var(--shadow-card);" />
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-sm mb-1" style="color: var(--text-primary);" x-text="sellCard.card_name"></p>
+                                    <p class="text-xs mb-2" style="color: var(--text-muted);" x-text="sellCard.rarity || 'Common'"></p>
+                                    <div class="flex items-center gap-1.5 mb-3">
+                                        <span class="text-xs font-medium" style="color: var(--text-muted);">En stock :</span>
+                                        <span class="text-xs font-bold" style="color: var(--text-primary);" x-text="'x' + sellCard.quantity"></span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                        <span class="text-sm font-bold" style="color: #d4a843;" x-text="sellPrice + ' / carte'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 rounded-xl mb-5" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                                <label class="text-xs font-medium block mb-2" style="color: var(--text-muted);">Quantité à vendre</label>
+                                <div class="flex items-center gap-3">
+                                    <button @click="sellQty = Math.max(1, sellQty - 1)" class="w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold"
+                                            style="background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);">−</button>
+                                    <span class="text-lg font-bold flex-1 text-center" style="color: var(--text-primary);" x-text="sellQty"></span>
+                                    <button @click="sellQty = Math.min(sellMaxQty, sellQty + 1)" class="w-8 h-8 rounded-lg flex items-center justify-center text-lg font-bold"
+                                            style="background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border);">+</button>
+                                </div>
+                                <div class="flex items-center justify-between mt-3 pt-3" style="border-top: 1px solid var(--border);">
+                                    <span class="text-xs font-medium" style="color: var(--text-muted);">Total</span>
+                                    <div class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                        <span class="text-sm font-bold" style="color: #22c55e;" x-text="(sellQty * sellPrice).toLocaleString('fr-FR') + ' PokéTokens'"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-3">
+                                <button @click="sellModal = false" class="btn btn-surface flex-1">Annuler</button>
+                                <form action="{{ route('collection.sell') }}" method="POST" class="flex-1">
+                                    @csrf
+                                    <input type="hidden" name="card_id" :value="sellCard.card_id" />
+                                    <input type="hidden" name="quantity" :value="sellQty" />
+                                    <button type="submit" class="btn w-full"
+                                            style="background: linear-gradient(135deg, #d4a843, #f59e0b); color: #000; font-weight: 700;">
+                                        Vendre
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <button @click="sellModal = false"
+                        class="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center"
+                        style="background: rgba(255,255,255,0.08); color: var(--text-muted);">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 </x-app-layout>

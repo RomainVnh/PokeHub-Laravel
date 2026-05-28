@@ -116,6 +116,10 @@
                                     <span class="text-xs font-medium" style="color: var(--text-muted);">Ton solde</span>
                                     <span class="text-sm font-bold" style="color: var(--text-primary);">{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }} PokéTokens</span>
                                 </div>
+                                <div class="flex items-center justify-between mt-2 pt-2" style="border-top: 1px solid var(--border);">
+                                    <span class="text-xs font-medium" style="color: var(--text-muted);">Après achat</span>
+                                    <span class="text-sm font-bold" style="color: {{ auth()->user()->poketokens >= 500 ? '#22c55e' : '#f87171' }};">{{ number_format(max(0, auth()->user()->poketokens - 500), 0, ',', ' ') }} PokéTokens</span>
+                                </div>
                             @endif
                         </div>
 
@@ -126,7 +130,7 @@
                             </div>
                             <div class="flex items-center gap-2.5 text-xs" style="color: var(--text-secondary);">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" style="color: #a382ff;" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
-                                Taux 5% secret, 15% illustration, 30% ultra
+                                Taux 4.8% secret, 14.4% illustration, 28.8% ultra
                             </div>
                             <div class="flex items-center gap-2.5 text-xs" style="color: var(--text-secondary);">
                                 <svg class="w-3.5 h-3.5 flex-shrink-0" style="color: #a382ff;" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
@@ -134,17 +138,30 @@
                             </div>
                         </div>
 
-                        <div class="flex gap-3">
-                            <button @click="premiumModal = false"
-                                    class="btn btn-surface flex-1">
-                                Annuler
-                            </button>
-                            <a :href="'/open/' + premiumSetId + '/premium'"
-                               class="btn flex-1 text-center"
-                               style="background: linear-gradient(135deg, #a382ff, #d4a843); color: white; font-weight: 700;">
-                                Ouvrir
-                            </a>
-                        </div>
+                        @if($canFreeOpen ?? false)
+                            <div class="flex gap-3">
+                                <button @click="premiumModal = false" class="btn btn-surface flex-1">Annuler</button>
+                                <a :href="'/open/' + premiumSetId + '/premium'"
+                                   class="btn flex-1 text-center"
+                                   style="background: linear-gradient(135deg, #a382ff, #d4a843); color: white; font-weight: 700;">
+                                    Ouvrir
+                                </a>
+                            </div>
+                        @elseif(auth()->user()->poketokens >= 500)
+                            <div class="flex gap-3">
+                                <button @click="premiumModal = false" class="btn btn-surface flex-1">Annuler</button>
+                                <form :action="'/open/' + premiumSetId + '/premium'" method="POST" class="flex-1">
+                                    @csrf
+                                    <button type="submit" class="btn w-full"
+                                            style="background: linear-gradient(135deg, #a382ff, #d4a843); color: white; font-weight: 700;">
+                                        Payer & Ouvrir
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            <p class="text-xs mb-4 text-center" style="color: #f87171;">Solde insuffisant pour ouvrir un booster premium.</p>
+                            <button @click="premiumModal = false" class="btn btn-surface w-full">Fermer</button>
+                        @endif
                     </div>
 
                     <button @click="premiumModal = false"
