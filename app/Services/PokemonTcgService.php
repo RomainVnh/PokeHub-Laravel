@@ -336,16 +336,16 @@ class PokemonTcgService
                 return $pick($tiers['secret']);         // 0.3%
             } elseif ($roll <= 150 && count($tiers['illustration']) > 0) {
                 return $pick($tiers['illustration']);    // 1.2%
-            } elseif ($roll <= 600 && count($tiers['ultra']) > 0) {
-                return $pick($tiers['ultra']);           // 4.5%
+            } elseif ($roll <= 1600 && count($tiers['ultra']) > 0) {
+                return $pick($tiers['ultra']);           // 14.5% (+10%)
             } elseif (count($tiers['rare']) > 0) {
-                return $pick($tiers['rare']);            // ~70%
+                return $pick($tiers['rare']);            // ~60%
             } else {
                 return $pick($tiers['uncommon']);
             }
         };
 
-        // Multi-rare roll (reduced chances)
+        // Multi-rare roll
         $multiRoll = mt_rand(1, 10000);
         if ($multiRoll <= 5) {
             $rareSlots = 5;   // 0.05% — God pack
@@ -372,6 +372,89 @@ class PokemonTcgService
 
         for ($i = 0; $i < $rareSlots; $i++) {
             $draw[] = $rollRare();
+        }
+
+        return $draw;
+    }
+
+    /**
+     * Draw premium booster cards — guaranteed 1 ultra/illustration/secret,
+     * much higher multi-rare and top-tier rates.
+     *
+     * Structure: 1 uncommon + 1 rare + 3 premium rare slots
+     * Each premium slot: 30% ultra, 15% illustration, 5% secret, 50% rare holo
+     * Multi-rare: always at least 3 rare slots, up to 5
+     */
+    public function drawPremiumBoosterCards(array $cards, int $count = 5): array
+    {
+        $tiers = [
+            'common'       => [],
+            'uncommon'     => [],
+            'rare'         => [],
+            'ultra'        => [],
+            'illustration' => [],
+            'secret'       => [],
+        ];
+
+        foreach ($cards as $card) {
+            $tier = $this->getRarityTier($card['rarity'] ?? 'Common');
+            $tiers[$tier][] = $card;
+        }
+
+        $fallback = $cards;
+
+        $pick = function (array $pool) use ($fallback) {
+            $p = count($pool) > 0 ? $pool : $fallback;
+            return $p[array_rand($p)];
+        };
+
+        $rollPremiumRare = function () use ($pick, $tiers) {
+            $roll = mt_rand(1, 10000);
+
+            if ($roll <= 500 && count($tiers['secret']) > 0) {
+                return $pick($tiers['secret']);         // 5%
+            } elseif ($roll <= 2000 && count($tiers['illustration']) > 0) {
+                return $pick($tiers['illustration']);    // 15%
+            } elseif ($roll <= 5000 && count($tiers['ultra']) > 0) {
+                return $pick($tiers['ultra']);           // 30%
+            } elseif (count($tiers['rare']) > 0) {
+                return $pick($tiers['rare']);            // 50%
+            } else {
+                return $pick($tiers['uncommon']);
+            }
+        };
+
+        // Premium multi-rare: always at least 3 rare slots
+        $multiRoll = mt_rand(1, 10000);
+        if ($multiRoll <= 200) {
+            $rareSlots = 5;   // 2% — God pack
+        } elseif ($multiRoll <= 1500) {
+            $rareSlots = 4;   // 13%
+        } else {
+            $rareSlots = 3;   // 85%
+        }
+
+        $rareSlots   = min($rareSlots, $count);
+        $normalSlots = $count - $rareSlots;
+
+        $draw = [];
+
+        for ($i = 0; $i < $normalSlots; $i++) {
+            $draw[] = ($i < $normalSlots - 1)
+                ? $pick($tiers['common'])
+                : $pick($tiers['uncommon']);
+        }
+
+        // First rare slot: guaranteed ultra or higher
+        $guaranteedPool = array_merge($tiers['ultra'], $tiers['illustration'], $tiers['secret']);
+        if (count($guaranteedPool) > 0) {
+            $draw[] = $pick($guaranteedPool);
+        } else {
+            $draw[] = $rollPremiumRare();
+        }
+
+        for ($i = 1; $i < $rareSlots; $i++) {
+            $draw[] = $rollPremiumRare();
         }
 
         return $draw;

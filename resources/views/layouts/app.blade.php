@@ -87,12 +87,12 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-[10px] font-medium" style="color: var(--text-muted);">PokéTokens</p>
-                        <p class="text-sm font-bold" style="color: #d4a843;">1 250</p>
+                        <p class="text-sm font-bold" style="color: #d4a843;">{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }}</p>
                     </div>
                 </div>
                 {{-- Collapsed token --}}
                 <div x-show="collapsed" class="flex justify-center mb-1">
-                    <div class="token-icon" title="1 250 PokéTokens" style="width: 32px; height: 32px;">
+                    <div class="token-icon" title="{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }} PokéTokens" style="width: 32px; height: 32px;">
                         <svg fill="currentColor" viewBox="0 0 512 512" style="width: 16px; height: 16px;">
                             <path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80zM224.5 161.7c6.8-.4 13.7-.7 20.8-.9C266.3 142.3 304.6 128 352 128c38 0 72.6 9.4 99.7 24.8C492.3 170.5 512 192 512 214.7V256c0 46-104.3 80-192 80c-14.1 0-27.8-.8-41-2.2c1.3-5 2.4-10.2 3.3-15.5C364.6 307.9 432 276.8 432 256c0-13.3-16.7-25.6-44.1-35C380.1 236.4 368 256 352 272c-5.2 5.2-10.8 10-16.8 14.3C393.8 296.8 432 280 432 256v-42.7c0-8.3-7.2-17.4-20-25.9c-15-10-35.6-18-60.3-23.2C327.6 155.5 296 152 264 154.3c-11.7 .8-23 2.2-33.5 4V161.7zM96 256c0-53 43-96 96-96s96 43 96 96-43 96-96 96-96-43-96-96zm96-32a32 32 0 1 0 0 64 32 32 0 1 0 0-64z"/>
                         </svg>

@@ -23,6 +23,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/open/{setId}/premium', [SetController::class, 'openPremiumBooster'])->name('open.booster.premium');
     Route::get('/collection', [CollectionController::class, 'index'])->name('collection');
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');

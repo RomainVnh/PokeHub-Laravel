@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\UserCard;
 use App\Services\PokemonTcgService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SetController extends Controller
@@ -149,8 +148,63 @@ class SetController extends Controller
 
         $drawn = $this->tcg->drawBoosterCards($cards, 5);
 
-        // Track new cards for authenticated users
+        $newCards = $this->trackDrawnCards($drawn, $setId);
+
+        return view('open-booster', [
+            'set'       => $set,
+            'drawn'     => $drawn,
+            'newCards'   => $newCards,
+            'isPremium' => false,
+        ]);
+    }
+
+    /**
+     * Open a premium booster (guaranteed ultra+, higher rates).
+     */
+    public function openPremiumBooster(string $setId)
+    {
+        $user = Auth::user();
+
+        $canFreeOpen = !$user->last_premium_booster_at
+            || !$user->last_premium_booster_at->isToday();
+
+        if (!$canFreeOpen && $user->poketokens < 500) {
+            return redirect()->route('open.index')
+                ->with('error', 'Tu as déjà utilisé ton booster premium gratuit aujourd\'hui et tu n\'as pas assez de PokéTokens (500 requis).');
+        }
+
+        $set = $this->tcg->getSet($setId);
+
+        if (!$set) {
+            return redirect()->route('open.index')->with('error', 'Impossible de charger cette édition.');
+        }
+
+        $cards = $this->tcg->getSetCards($setId, 1, 250);
+
+        if (empty($cards)) {
+            return redirect()->route('open.index')->with('error', 'Aucune carte trouvée pour cette édition.');
+        }
+
+        $drawn = $this->tcg->drawPremiumBoosterCards($cards, 5);
+
+        if ($canFreeOpen) {
+            $user->update(['last_premium_booster_at' => now()]);
+        }
+
+        $newCards = $this->trackDrawnCards($drawn, $setId);
+
+        return view('open-booster', [
+            'set'       => $set,
+            'drawn'     => $drawn,
+            'newCards'   => $newCards,
+            'isPremium' => true,
+        ]);
+    }
+
+    private function trackDrawnCards(array $drawn, string $setId): array
+    {
         $newCards = [];
+
         if (Auth::check()) {
             $userId = Auth::id();
             $drawnIds = array_map(fn($c) => $c['id'], $drawn);
@@ -181,10 +235,6 @@ class SetController extends Controller
             }
         }
 
-        return view('open-booster', [
-            'set'      => $set,
-            'drawn'    => $drawn,
-            'newCards'  => $newCards,
-        ]);
+        return $newCards;
     }
 }

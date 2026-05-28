@@ -13,9 +13,12 @@
             return null;
         };
 
-        // Drop rate per tier (from the booster algorithm)
-        $dropRates = [
-            'ultra'        => '4.5%',
+        $dropRates = ($isPremium ?? false) ? [
+            'ultra'        => '30%',
+            'illustration' => '15%',
+            'secret'       => '5%',
+        ] : [
+            'ultra'        => '14.5%',
             'illustration' => '1.2%',
             'secret'       => '0.3%',
         ];
@@ -118,12 +121,25 @@
             </div>
         @endif
 
+        {{-- Premium badge --}}
+        @if($isPremium ?? false)
+            <div class="mb-6 anim-fade-up">
+                <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold"
+                      style="background: linear-gradient(135deg, rgba(163,130,255,0.2), rgba(212,168,67,0.2)); border: 1px solid rgba(163,130,255,0.4); color: #a382ff;">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8 416.2 508.3c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L380.9 150.3 316.9 18z"/></svg>
+                    BOOSTER PREMIUM
+                </span>
+            </div>
+        @endif
+
         {{-- Set info --}}
         <div class="text-center mb-12 anim-fade-up">
             <img src="{{ $set['images']['logo'] ?? '' }}" alt="{{ $set['name'] }}"
                  class="h-20 mx-auto mb-5 object-contain" />
             <h1 class="text-2xl font-extrabold mb-2" style="color: var(--text-primary);">{{ $set['name'] }}</h1>
-            <p class="text-sm" style="color: var(--text-muted);">Booster de 5 cartes</p>
+            <p class="text-sm" style="color: var(--text-muted);">
+                {{ ($isPremium ?? false) ? 'Booster Premium — 1 ultra rare garantie' : 'Booster de 5 cartes' }}
+            </p>
         </div>
 
         {{-- Cards --}}
@@ -178,13 +194,19 @@
         </div>
 
         {{-- Actions --}}
-        <div class="flex gap-4 anim-fade-up" style="animation-delay: 600ms;">
+        <div class="flex gap-4 anim-fade-up flex-wrap justify-center" style="animation-delay: 600ms;">
             <button @click="revealAll()" class="btn btn-surface" x-show="!allRevealed">
                 Tout révéler
             </button>
             <a href="{{ route('open.booster', $set['id']) }}" class="btn btn-primary">
                 Nouveau booster
             </a>
+            @auth
+                <a href="{{ route('open.booster.premium', $set['id']) }}" class="btn"
+                   style="background: linear-gradient(135deg, #a382ff, #d4a843); color: white; font-weight: 700;">
+                    ★ Premium
+                </a>
+            @endauth
             <a href="{{ route('set.show', $set['id']) }}" class="btn btn-ghost">
                 Voir l'édition
             </a>
