@@ -4,6 +4,7 @@ use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SetController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public routes ──────────────────────────────────────────────────────
@@ -27,6 +28,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/collection', [CollectionController::class, 'index'])->name('collection');
     Route::post('/collection/sell', [CollectionController::class, 'sell'])->name('collection.sell');
     Route::post('/collection/favorite', [CollectionController::class, 'toggleFavorite'])->name('collection.favorite');
+    Route::get('/shop',          [ShopController::class, 'index'])->name('shop');
+    Route::post('/shop/buy/{item}',   [ShopController::class, 'buy'])->name('shop.buy');
+    Route::post('/shop/equip/{item}', [ShopController::class, 'equip'])->name('shop.equip');
+    Route::post('/shop/unequip/{category}', [ShopController::class, 'unequip'])->name('shop.unequip');
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');

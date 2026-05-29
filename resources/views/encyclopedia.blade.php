@@ -8,7 +8,16 @@
             <img src="{{ asset('images/bannieredarkrai.webp') }}" alt="" class="page-hero-bg" />
             <div class="page-hero-overlay"></div>
             <div class="relative z-10">
-            <span class="label-xs block mb-3" style="color: var(--text-primary);">Explorer</span>
+            <div class="flex items-center justify-between mb-3">
+                <span class="label-xs block" style="color: var(--text-primary);">Explorer</span>
+                @auth
+                    <a href="{{ route('collection') }}" class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all"
+                       style="background: linear-gradient(135deg, rgba(212,168,67,0.15), rgba(245,158,11,0.15)); border: 1px solid rgba(212,168,67,0.3); color: #d4a843;">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM16 232v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V232c0-13.3-10.7-24-24-24H40c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V392c0-13.3-10.7-24-24-24H40z"/></svg>
+                        Ma Collection
+                    </a>
+                @endauth
+            </div>
             <h1 class="text-3xl font-black mb-2 tracking-tight" style="color: var(--text-primary);">Encyclopédie</h1>
             <p class="text-sm mb-8" style="color: var(--text-muted);">{{ count($sets) }} éditions disponibles</p>
 

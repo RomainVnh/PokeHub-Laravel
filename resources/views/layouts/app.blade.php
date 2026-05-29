@@ -86,7 +86,7 @@
                     ['href' => '/prices',       'label' => 'Prix',          'vb' => '576', 'icon' => 'M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm64 320H64V320c35.3 0 64 28.7 64 64zM64 192V128h64c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64v64H448zm64-192c-35.3 0-64-28.7-64-64h64v64zM288 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z'],
                 ];
                 if (Auth::check()) {
-                    $navItems[] = ['href' => '/collection', 'label' => 'Collection', 'vb' => '512', 'icon' => 'M40 48C26.7 48 16 58.7 16 72v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V72c0-13.3-10.7-24-24-24H40zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM16 232v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V232c0-13.3-10.7-24-24-24H40c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24v48c0 13.3 10.7 24 24 24H88c13.3 0 24-10.7 24-24V392c0-13.3-10.7-24-24-24H40z'];
+                    $navItems[] = ['href' => '/shop', 'label' => 'Boutique', 'vb' => '576', 'icon' => 'M253.3 35.1c6.1-11.8 1.5-26.3-10.2-32.4s-26.3-1.5-32.4 10.2L117.6 192 32 192c-17.7 0-32 14.3-32 32s14.3 32 32 32L0 448c0 17.7 14.3 32 32 32H576c17.7 0 32-14.3 32-32l-32-192c17.7 0 32-14.3 32-32s-14.3-32-32-32H490.4L397.3 12.9C391.2 1.2 376.7-3.4 365 2.7s-16.3 20.6-10.2 32.4L430.4 192H177.6L253.3 35.1zM176 288v96c0 13.3-10.7 24-24 24s-24-10.7-24-24V288c0-13.3 10.7-24 24-24s24 10.7 24 24zm112 0v96c0 13.3-10.7 24-24 24s-24-10.7-24-24V288c0-13.3 10.7-24 24-24s24 10.7 24 24zm112 0v96c0 13.3-10.7 24-24 24s-24-10.7-24-24V288c0-13.3 10.7-24 24-24s24 10.7 24 24z'];
                 }
                 $currentPath = '/'.ltrim(request()->path(), '/');
             @endphp
@@ -134,20 +134,36 @@
             @endauth
 
             @auth
+                @php
+                    $activeFrame = null;
+                    if (auth()->user()->active_frame) {
+                        $activeFrame = \App\Models\ShopItem::where('slug', auth()->user()->active_frame)->first();
+                    }
+                    $activeTitle = null;
+                    if (auth()->user()->active_title) {
+                        $activeTitle = \App\Models\ShopItem::where('slug', auth()->user()->active_title)->first();
+                    }
+                @endphp
                 <div class="flex items-center gap-2">
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all flex-1 min-w-0" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;" @click="mobileMenu = false">
                         @if(auth()->user()->avatar)
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background: var(--bg-card);">
+                            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
+                                 style="background: var(--bg-card);{{ $activeFrame ? ' border: ' . ($activeFrame->data['border'] ?? '') . '; box-shadow: ' . ($activeFrame->data['shadow'] ?? 'none') . ';' : '' }}">
                                 <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-6 h-6 object-contain" />
                             </div>
                         @else
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold" style="background: var(--accent); color: var(--text-inverse);">
+                            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold"
+                                 style="background: var(--accent); color: var(--text-inverse);{{ $activeFrame ? ' border: ' . ($activeFrame->data['border'] ?? '') . '; box-shadow: ' . ($activeFrame->data['shadow'] ?? 'none') . ';' : '' }}">
                                 {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
                             </div>
                         @endif
                         <div x-show="!collapsed" class="flex-1 min-w-0">
                             <p class="text-xs font-semibold truncate" style="color: var(--text-primary);">{{ auth()->user()->name ?? 'Dresseur' }}</p>
-                            <p class="text-[10px] font-medium" style="color: var(--text-muted);">Mon profil</p>
+                            @if($activeTitle)
+                                <p class="text-[10px] font-extrabold truncate" style="background: {{ $activeTitle->data['gradient'] ?? '' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow({{ $activeTitle->data['shadow'] ?? '0 1px 2px rgba(0,0,0,0.3)' }});">{{ $activeTitle->name }}</p>
+                            @else
+                                <p class="text-[10px] font-medium" style="color: var(--text-muted);">Mon profil</p>
+                            @endif
                         </div>
                     </a>
                     <button x-show="!collapsed" @click="settingsOpen = !settingsOpen"
