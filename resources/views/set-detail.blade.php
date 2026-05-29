@@ -364,7 +364,7 @@
                                         <span class="text-xs font-bold" style="color: var(--text-primary);" x-text="'x' + (collectedCards[sellCard.id] || 0)"></span>
                                     </div>
                                     <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-4 h-4 object-contain" />
                                         <span class="text-sm font-bold" style="color: #d4a843;" x-text="sellPrice + ' / carte'"></span>
                                     </div>
                                 </div>
@@ -382,7 +382,7 @@
                                 <div class="flex items-center justify-between mt-3 pt-3" style="border-top: 1px solid var(--border);">
                                     <span class="text-xs font-medium" style="color: var(--text-muted);">Total</span>
                                     <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-4 h-4 object-contain" />
                                         <span class="text-sm font-bold" style="color: #22c55e;" x-text="(sellQty * sellPrice).toLocaleString('fr-FR') + ' PokéTokens'"></span>
                                     </div>
                                 </div>

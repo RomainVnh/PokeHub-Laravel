@@ -22,7 +22,7 @@
                 <div class="flex items-center gap-3">
                     <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl"
                          style="background: rgba(212,168,67,0.1); border: 1px solid rgba(212,168,67,0.25);">
-                        <svg class="w-5 h-5" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-5 h-5 object-contain" />
                         <span class="text-lg font-extrabold" style="color: #d4a843;">{{ number_format($user->poketokens, 0, ',', ' ') }}</span>
                         <span class="text-xs font-medium" style="color: var(--text-muted);">PokéTokens</span>
                     </div>
@@ -111,7 +111,7 @@
                                     <span class="text-xs font-bold" style="color: #22c55e;">Gratuit</span>
                                 @else
                                     <div class="flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-3.5 h-3.5 object-contain" />
                                         <span class="text-sm font-bold" style="color: #d4a843;">{{ number_format($item->price, 0, ',', ' ') }}</span>
                                     </div>
                                 @endif
@@ -179,7 +179,7 @@
                                             <span class="text-xs font-bold" style="color: #22c55e;">Gratuit</span>
                                         @else
                                             <div class="flex items-center gap-1.5">
-                                                <svg class="w-3.5 h-3.5" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                                <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-3.5 h-3.5 object-contain" />
                                                 <span class="text-sm font-bold" style="color: #d4a843;">{{ number_format($item->price, 0, ',', ' ') }}</span>
                                             </div>
                                         @endif
@@ -261,7 +261,7 @@
                                         <span class="text-xs font-bold" style="color: #22c55e;">Gratuit</span>
                                     @else
                                         <div class="flex items-center gap-1">
-                                            <svg class="w-3 h-3" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                            <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-3 h-3 object-contain" />
                                             <span class="text-xs font-bold" style="color: #d4a843;">{{ number_format($item->price, 0, ',', ' ') }}</span>
                                         </div>
                                     @endif
@@ -321,7 +321,7 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs font-medium" style="color: var(--text-muted);">Prix</span>
                             <div class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4" style="color: #d4a843;" fill="currentColor" viewBox="0 0 512 512"><path d="M512 80c0 18-14.3 34.6-38.4 48c-29.1 16.1-72.5 27.5-122.3 30.9c-3.7-1.8-7.4-3.5-11.3-5C300.6 137.4 248.2 128 192 128c-8.3 0-16.4 .3-24.5 .8C124.3 109.2 96.4 88 96.4 64c0-35.3 57.3-64 128-64s128 28.7 128 64c0 5.3-1 10.4-2.8 15.3C430.1 82.6 512 78 512 80z"/></svg>
+                                <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-4 h-4 object-contain" />
                                 <span class="text-sm font-bold" style="color: #d4a843;" x-text="confirmBuy?.price?.toLocaleString('fr-FR')"></span>
                             </div>
                         </div>
