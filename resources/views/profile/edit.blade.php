@@ -67,7 +67,7 @@
                     <div class="rounded-2xl p-6" style="background: var(--bg-elevated); border: 1px solid var(--border);">
                         <div class="flex items-center justify-between mb-5">
                             <h2 class="text-base font-bold" style="color: var(--text-primary);">Cosmetiques equipes</h2>
-                            <a href="{{ route('shop.index') }}" class="btn btn-surface btn-sm">
+                            <a href="{{ route('shop') }}" class="btn btn-surface btn-sm">
                                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 576 512"><path d="M253.3 35.1c6.1-11.8 1.5-26.3-10.2-32.4s-26.3-1.5-32.4 10.2L117.6 192 32 192c-17.7 0-32 14.3-32 32s14.3 32 32 32L0 448c0 17.7 14.3 32 32 32H576c17.7 0 32-14.3 32-32l-32-192c17.7 0 32-14.3 32-32s-14.3-32-32-32H490.4L397.3 12.9C391.2 1.2 376.7-3.4 365 2.7s-16.3 20.6-10.2 32.4L430.4 192H177.6L253.3 35.1z"/></svg>
                                 Boutique
                             </a>

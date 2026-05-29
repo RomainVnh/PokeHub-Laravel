@@ -257,9 +257,9 @@ class ShopItemSeeder extends Seeder
                 'data' => ['image' => 'images/sleeves/mewtwo_mew.jpg', 'color' => '#A855F7'],
             ],
             [
-                'slug' => 'sleeve-mimiki', 'category' => 'sleeve', 'name' => 'Mimiqui',
-                'description' => 'Le spectre déguisé en Pikachu.', 'price' => 1800, 'preview' => '', 'sort_order' => 17,
-                'data' => ['image' => 'images/sleeves/mimiki.jpg', 'color' => '#FACC15'],
+                'slug' => 'sleeve-torterra', 'category' => 'sleeve', 'name' => 'Torterra',
+                'description' => 'Le continent vivant, gardien de la nature.', 'price' => 1800, 'preview' => '', 'sort_order' => 17,
+                'data' => ['image' => 'images/sleeves/torterra.jpg', 'color' => '#22c55e'],
             ],
             [
                 'slug' => 'sleeve-osselet', 'category' => 'sleeve', 'name' => 'Osselait',
@@ -286,6 +286,11 @@ class ShopItemSeeder extends Seeder
                 'slug' => 'sleeve-arceus', 'category' => 'sleeve', 'name' => 'Arceus',
                 'description' => 'Le Dieu Pokémon — Exclusif.', 'price' => 10000, 'preview' => '', 'sort_order' => 52,
                 'data' => ['image' => 'images/sleeves/arceus.jpg', 'color' => '#FFD700', 'exclusive' => true],
+            ],
+            [
+                'slug' => 'sleeve-giratina', 'category' => 'sleeve', 'name' => 'Giratina',
+                'description' => 'Le maître du Monde Distorsion — Exclusif.', 'price' => 10000, 'preview' => '', 'sort_order' => 53,
+                'data' => ['image' => 'images/sleeves/giratina.jpg', 'color' => '#FFD700', 'exclusive' => true],
             ],
 
             // ═══ AVATARS ════════════════════════════════════════════════
@@ -368,6 +373,11 @@ class ShopItemSeeder extends Seeder
                 'slug' => 'avatar-deoxys', 'category' => 'avatar', 'name' => 'Deoxys',
                 'description' => 'L\'entité extraterrestre — Exclusif.', 'price' => 8000, 'preview' => '', 'sort_order' => 50,
                 'data' => ['image' => 'images/pfp/deoxys.jpg', 'exclusive' => true],
+            ],
+            [
+                'slug' => 'avatar-giratina', 'category' => 'avatar', 'name' => 'Giratina',
+                'description' => 'L\'ombre du Monde Distorsion — Exclusif.', 'price' => 8000, 'preview' => '', 'sort_order' => 51,
+                'data' => ['image' => 'images/pfp/giratina.jpg', 'exclusive' => true],
             ],
         ];
 

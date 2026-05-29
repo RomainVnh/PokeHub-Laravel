@@ -1015,6 +1015,39 @@ main.flex-1 {
   backdrop-filter: blur(4px);
 }
 
+/* ── Sidebar collapse teardrop button ────────────────────────────── */
+.sidebar-collapse-teardrop {
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  z-index: 40;
+  width: 28px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 24px 24px 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+.sidebar-main:hover .sidebar-collapse-teardrop,
+.sidebar-collapse-teardrop:hover {
+  opacity: 1;
+}
+.sidebar-collapse-teardrop:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  box-shadow: 4px 0 12px rgba(0,0,0,0.3);
+  width: 32px;
+}
+
 /* ── Desktop: sidebar always visible ─────────────────────────────── */
 .sidebar-main.sidebar-responsive,
 .sidebar-main.sidebar-force {
@@ -1059,7 +1092,8 @@ main.flex-1 {
   }
 
   /* Hide collapse button on mobile */
-  .sidebar-collapse-btn {
+  .sidebar-collapse-btn,
+  .sidebar-collapse-teardrop {
     display: none !important;
   }
 

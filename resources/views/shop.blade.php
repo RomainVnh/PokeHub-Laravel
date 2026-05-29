@@ -30,6 +30,35 @@
             </div>
         </div>
 
+        {{-- ── Weekly rotation banner ──────────────────────────────── --}}
+        <div class="mx-10 mt-6 px-5 py-4 rounded-2xl relative overflow-hidden" style="background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(212,168,67,0.08) 50%, rgba(239,68,68,0.08) 100%); border: 1px solid rgba(99,102,241,0.2);">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(212,168,67,0.2));">
+                    <svg class="w-5 h-5" style="color: #818cf8;" fill="currentColor" viewBox="0 0 512 512"><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg>
+                </div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold" style="color: var(--text-primary);">Les articles changent chaque semaine</p>
+                    <p class="text-xs mt-0.5" style="color: var(--text-muted);">De nouveaux items exclusifs et des promotions apparaissent regulierement. Reviens souvent !</p>
+                </div>
+                @php
+                    $now = \Carbon\Carbon::now();
+                    $endOfWeek = $now->copy()->endOfWeek(\Carbon\Carbon::SUNDAY);
+                    $daysLeft = (int) $now->diffInDays($endOfWeek);
+                    $hoursLeft = (int) $now->diffInHours($endOfWeek) % 24;
+                @endphp
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="text-center px-3 py-2 rounded-lg" style="background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);">
+                        <p class="text-lg font-black" style="color: #818cf8;">{{ $daysLeft }}</p>
+                        <p class="text-[9px] font-semibold uppercase" style="color: var(--text-muted);">jours</p>
+                    </div>
+                    <div class="text-center px-3 py-2 rounded-lg" style="background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.2);">
+                        <p class="text-lg font-black" style="color: #818cf8;">{{ $hoursLeft }}</p>
+                        <p class="text-[9px] font-semibold uppercase" style="color: var(--text-muted);">heures</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- ── Category tabs ──────────────────────────────────────── --}}
         <div class="px-10 py-4 flex items-center gap-2 flex-wrap" style="border-bottom: 1px solid var(--border);">
             <button @click="tab = 'title'"
