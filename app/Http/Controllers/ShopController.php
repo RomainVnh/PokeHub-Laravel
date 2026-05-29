@@ -90,6 +90,11 @@ class ShopController extends Controller
             }
         }
 
+        if ($item->category === 'avatar') {
+            $user->update(['avatar' => asset($item->data['image'])]);
+            return back()->with('success', "« {$item->name} » est maintenant ton avatar !");
+        }
+
         $field = match ($item->category) {
             'title'  => 'active_title',
             'frame'  => 'active_frame',
@@ -111,6 +116,11 @@ class ShopController extends Controller
      */
     public function unequip(string $category)
     {
+        if ($category === 'avatar') {
+            Auth::user()->update(['avatar' => null]);
+            return back()->with('success', 'Avatar réinitialisé.');
+        }
+
         $field = match ($category) {
             'title'  => 'active_title',
             'frame'  => 'active_frame',

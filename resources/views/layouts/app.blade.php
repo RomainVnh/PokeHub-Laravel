@@ -156,7 +156,7 @@
                         <div x-show="!collapsed" class="flex-1 min-w-0">
                             <p class="text-xs font-semibold truncate" style="color: var(--text-primary);">{{ auth()->user()->name ?? 'Dresseur' }}</p>
                             @if($activeTitle)
-                                <p class="text-[10px] font-extrabold truncate" style="background: {{ $activeTitle->data['gradient'] ?? '' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $activeTitle->data['shadow'] ?? 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }};">{{ $activeTitle->name }}</p>
+                                <p class="text-[10px] font-extrabold truncate {{ ($activeTitle->data['animated'] ?? false) ? 'title-animated' : '' }}" style="background: {{ $activeTitle->data['gradient'] ?? '' }}; background-size: {{ ($activeTitle->data['animated'] ?? false) ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $activeTitle->data['shadow'] ?? 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }};">{{ $activeTitle->name }}</p>
                             @else
                                 <p class="text-[10px] font-medium" style="color: var(--text-muted);">Mon profil</p>
                             @endif

@@ -62,6 +62,16 @@
                     Sleeves
                 </span>
             </button>
+            <button @click="tab = 'avatar'"
+                    class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
+                    :style="tab === 'avatar'
+                        ? 'background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.15)); color: #22c55e; border: 1px solid rgba(34,197,94,0.3);'
+                        : 'background: transparent; color: var(--text-muted); border: 1px solid var(--border);'">
+                <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512"><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>
+                    Avatars
+                </span>
+            </button>
         </div>
 
         {{-- ── Items grid ─────────────────────────────────────────── --}}
@@ -78,10 +88,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach($items['title'] ?? [] as $item)
                         @php
-                            $isOwned   = in_array($item->id, $owned);
-                            $isActive  = $activeTitle === $item->slug;
-                            $gradient  = $item->data['gradient'] ?? 'linear-gradient(135deg, #9CA3AF, #6B7280)';
-                            $shadow    = $item->data['shadow'] ?? 'none';
+                            $isOwned    = in_array($item->id, $owned);
+                            $isActive   = $activeTitle === $item->slug;
+                            $gradient   = $item->data['gradient'] ?? 'linear-gradient(135deg, #9CA3AF, #6B7280)';
+                            $shadow     = $item->data['shadow'] ?? 'none';
+                            $isAnimated = $item->data['animated'] ?? false;
                         @endphp
                         <div class="relative rounded-2xl overflow-hidden transition-all {{ $isActive ? 'ring-2 ring-offset-2' : '' }}"
                              style="background: var(--bg-card); border: 1px solid {{ $isActive ? 'rgba(255,215,0,0.4)' : 'var(--border)' }}; {{ $isActive ? 'ring-color: #ffd700; --tw-ring-offset-color: var(--bg-base);' : '' }}">
@@ -90,7 +101,7 @@
                             <div class="px-6 pt-6 pb-4">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex-1">
-                                        <p class="text-lg font-extrabold mb-1" style="background: {{ $gradient }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $shadow }};">
+                                        <p class="text-lg font-extrabold mb-1 {{ $isAnimated ? 'title-animated' : '' }}" style="background: {{ $gradient }}; background-size: {{ $isAnimated ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $shadow }};">
                                             {{ $item->name }}
                                         </p>
                                         <p class="text-xs" style="color: var(--text-muted);">{{ $item->description }}</p>
@@ -280,6 +291,78 @@
                                         </button>
                                     @elseif($isActive)
                                         <form action="{{ route('shop.unequip', 'sleeve') }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-surface btn-sm text-[11px] cursor-pointer">Retirer</button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('shop.equip', $item) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-primary btn-sm text-[11px] cursor-pointer">Équiper</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+
+                            @if($isActive)
+                                <div class="absolute top-3 right-3">
+                                    <span class="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold"
+                                          style="background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3);">
+                                        Actif
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- AVATARS ────────────────────────────────────────────────── --}}
+            <div x-show="tab === 'avatar'" x-transition.opacity x-cloak>
+                <div class="flex items-center gap-3 mb-2">
+                    <h2 class="text-lg font-bold" style="color: var(--text-primary);">Icônes de Profil</h2>
+                    <span class="list-pill">{{ ($items['avatar'] ?? collect())->count() }}</span>
+                </div>
+                <p class="text-sm mb-8" style="color: var(--text-muted);">Change ton avatar avec une illustration Pokémon</p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+                    @foreach($items['avatar'] ?? [] as $item)
+                        @php
+                            $isOwned   = in_array($item->id, $owned);
+                            $avatarImg = $item->data['image'] ?? '';
+                            $isActive  = auth()->user()->avatar && str_contains(auth()->user()->avatar, basename($avatarImg));
+                        @endphp
+                        <div class="relative rounded-2xl overflow-hidden transition-all group"
+                             style="background: var(--bg-card); border: 1px solid {{ $isActive ? 'rgba(34,197,94,0.4)' : 'var(--border)' }};">
+
+                            {{-- Avatar preview (round) --}}
+                            <div class="p-5 flex justify-center">
+                                <div class="avatar-shop-preview {{ $isActive ? 'avatar-active-ring' : '' }}">
+                                    <img src="{{ asset($avatarImg) }}" alt="{{ $item->name }}" class="w-full h-full object-cover" />
+                                </div>
+                            </div>
+
+                            <div class="px-3 pb-4">
+                                <p class="font-bold text-sm mb-0.5 text-center" style="color: var(--text-primary);">{{ $item->name }}</p>
+                                <p class="text-[11px] text-center mb-3" style="color: var(--text-muted);">{{ $item->description }}</p>
+
+                                <div class="flex items-center justify-between">
+                                    @if($item->price === 0)
+                                        <span class="text-xs font-bold" style="color: #22c55e;">Gratuit</span>
+                                    @else
+                                        <div class="flex items-center gap-1">
+                                            <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-3 h-3 object-contain" />
+                                            <span class="text-xs font-bold" style="color: #d4a843;">{{ number_format($item->price, 0, ',', ' ') }}</span>
+                                        </div>
+                                    @endif
+
+                                    @if(!$isOwned && $item->price > 0)
+                                        <button @click="confirmBuy = @js(['id' => $item->id, 'name' => $item->name, 'price' => $item->price, 'url' => route('shop.buy', $item)])"
+                                                class="btn btn-sm text-[11px] cursor-pointer"
+                                                style="background: linear-gradient(135deg, #d4a843, #f59e0b); color: #000; font-weight: 700;">
+                                            Acheter
+                                        </button>
+                                    @elseif($isActive)
+                                        <form action="{{ route('shop.unequip', 'avatar') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-surface btn-sm text-[11px] cursor-pointer">Retirer</button>
                                         </form>
