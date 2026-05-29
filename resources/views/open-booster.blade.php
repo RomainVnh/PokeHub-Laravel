@@ -192,12 +192,16 @@
                             @endif
                         </div>
                         <div style="position: absolute; inset: 0; border-radius: 12px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: rotateY(180deg);">
-                            @if($sleeveData)
+                            @if($sleeveData && isset($sleeveData['image']))
+                                <img src="{{ asset($sleeveData['image']) }}" alt="Sleeve" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+                                <div class="sleeve-back-plastic" style="border-radius: 12px;"></div>
+                            @elseif($sleeveData)
                                 <div style="width: 100%; height: 100%; background: {{ $sleeveData['background'] ?? '#1a1d25' }}; display: flex; align-items: center; justify-content: center;">
                                     <div style="width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 2px solid {{ $sleeveData['color'] ?? '#6B7280' }}60;">
                                         <svg style="width: 28px; height: 28px; color: {{ $sleeveData['color'] ?? '#6B7280' }};" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
                                     </div>
                                 </div>
+                                <div class="sleeve-back-plastic" style="border-radius: 12px;"></div>
                             @else
                                 <img src="{{ asset('images/card-back.png') }}" alt="Card back"
                                      style="width: 100%; height: 100%; object-fit: cover; display: block;" />
@@ -269,8 +273,20 @@
                                 @endif
                             </div>
                             <div style="position: absolute; inset: 0; border-radius: 12px; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; transform: rotateY(180deg);">
-                                <img src="{{ asset('images/card-back.png') }}" alt="Card back"
-                                     style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+                                @if($sleeveData && isset($sleeveData['image']))
+                                    <img src="{{ asset($sleeveData['image']) }}" alt="Sleeve" style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+                                    <div class="sleeve-back-plastic" style="border-radius: 12px;"></div>
+                                @elseif($sleeveData)
+                                    <div style="width: 100%; height: 100%; background: {{ $sleeveData['background'] ?? '#1a1d25' }}; display: flex; align-items: center; justify-content: center;">
+                                        <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 2px solid {{ $sleeveData['color'] ?? '#6B7280' }}60;">
+                                            <svg style="width: 24px; height: 24px; color: {{ $sleeveData['color'] ?? '#6B7280' }};" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+                                        </div>
+                                    </div>
+                                    <div class="sleeve-back-plastic" style="border-radius: 12px;"></div>
+                                @else
+                                    <img src="{{ asset('images/card-back.png') }}" alt="Card back"
+                                         style="width: 100%; height: 100%; object-fit: cover; display: block;" />
+                                @endif
                             </div>
                         </div>
                     </div>

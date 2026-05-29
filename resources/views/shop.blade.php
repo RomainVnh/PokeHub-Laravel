@@ -90,7 +90,7 @@
                             <div class="px-6 pt-6 pb-4">
                                 <div class="flex items-center justify-between mb-4">
                                     <div class="flex-1">
-                                        <p class="text-lg font-extrabold mb-1" style="background: {{ $gradient }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: drop-shadow({{ $shadow }});">
+                                        <p class="text-lg font-extrabold mb-1" style="background: {{ $gradient }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $shadow }};">
                                             {{ $item->name }}
                                         </p>
                                         <p class="text-xs" style="color: var(--text-muted);">{{ $item->description }}</p>
@@ -232,23 +232,29 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                     @foreach($items['sleeve'] ?? [] as $item)
                         @php
-                            $isOwned   = in_array($item->id, $owned);
-                            $isActive  = $activeSleeve === $item->slug;
-                            $bgCss     = $item->data['background'] ?? 'linear-gradient(135deg, #1a1d25, #2a2d35)';
-                            $colorCss  = $item->data['color'] ?? '#6B7280';
+                            $isOwned    = in_array($item->id, $owned);
+                            $isActive   = $activeSleeve === $item->slug;
+                            $sleeveImg  = $item->data['image'] ?? null;
+                            $bgCss      = $item->data['background'] ?? 'linear-gradient(135deg, #1a1d25, #2a2d35)';
+                            $colorCss   = $item->data['color'] ?? '#6B7280';
                         @endphp
-                        <div class="relative rounded-2xl overflow-hidden transition-all"
+                        <div class="relative rounded-2xl overflow-hidden transition-all group"
                              style="background: var(--bg-card); border: 1px solid {{ $isActive ? 'rgba(239,68,68,0.4)' : 'var(--border)' }};">
 
                             {{-- Sleeve preview (card back shape) --}}
                             <div class="p-5 flex justify-center">
-                                <div class="w-24 rounded-xl overflow-hidden" style="aspect-ratio: 63/88; border: 2px solid {{ $colorCss }}40;">
-                                    <div class="w-full h-full flex items-center justify-center" style="background: {{ $bgCss }};">
-                                        <div class="w-10 h-10 rounded-full flex items-center justify-center"
-                                             style="background: rgba(255,255,255,0.08); border: 2px solid {{ $colorCss }}60;">
-                                            <svg class="w-5 h-5" style="color: {{ $colorCss }};" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+                                <div class="sleeve-card-preview" style="border-color: {{ $colorCss }}40;">
+                                    @if($sleeveImg)
+                                        <img src="{{ asset($sleeveImg) }}" alt="{{ $item->name }}" class="sleeve-card-img" />
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center" style="background: {{ $bgCss }};">
+                                            <div style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); border: 2px solid {{ $colorCss }}60;">
+                                                <svg class="w-5 h-5" style="color: {{ $colorCss }};" fill="currentColor" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2c-.5 99.2-41.3 280.7-213.6 363.2c-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></svg>
+                                            </div>
                                         </div>
-                                    </div>
+                                    @endif
+                                    {{-- Plastic sheen overlay --}}
+                                    <div class="sleeve-plastic-sheen"></div>
                                 </div>
                             </div>
 
