@@ -403,17 +403,23 @@
     </div>
 
     @php
-        use App\Http\Controllers\CollectionController;
+        $sellPricesMap = [];
+        foreach ($cards as $c) {
+            $r = strtolower($c['rarity'] ?? '');
+            $p = 10;
+            if (str_contains($r, 'secret') || str_contains($r, 'rainbow') || str_contains($r, 'hyper') || str_contains($r, 'gold') || (str_contains($r, 'shiny') && str_contains($r, 'ultra'))) { $p = 1500; }
+            elseif (str_contains($r, 'illustration') || str_contains($r, 'amazing')) { $p = 800; }
+            elseif (str_contains($r, 'ultra') || str_contains($r, 'double') || str_contains($r, 'ace') || str_contains($r, ' ex') || str_contains($r, ' gx') || str_contains($r, 'vmax') || str_contains($r, 'vstar')) { $p = 400; }
+            elseif (str_contains($r, 'rare') || str_contains($r, 'holo')) { $p = 100; }
+            elseif (str_contains($r, 'uncommon')) { $p = 30; }
+            $sellPricesMap[$c['id']] = $p;
+        }
     @endphp
 
     <script>
         function setDetail() {
             const collectedCards = @json($collectedCards);
-            const sellPrices = @json(
-                collect($cards)->mapWithKeys(function ($card) {
-                    return [$card['id'] => CollectionController::getSellPrice($card['rarity'] ?? null)];
-                })
-            );
+            const sellPrices = @json($sellPricesMap);
 
             return {
                 popup: { visible: false, card: null, x: 0, y: 0 },

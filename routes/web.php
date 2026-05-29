@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::match(['get', 'post'], '/open/{setId}/premium', [SetController::class, 'openPremiumBooster'])->name('open.booster.premium');
     Route::get('/collection', [CollectionController::class, 'index'])->name('collection');
     Route::post('/collection/sell', [CollectionController::class, 'sell'])->name('collection.sell');
+    Route::post('/collection/favorite', [CollectionController::class, 'toggleFavorite'])->name('collection.favorite');
     Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
     Route::patch('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar');

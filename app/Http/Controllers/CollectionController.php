@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UserCard;
+use App\Models\UserFavorite;
 use App\Services\PokemonTcgService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -74,12 +75,18 @@ class CollectionController extends Controller
         // Sort rarity stats by count
         arsort($rarityStats);
 
+        // Favorites
+        $favorites = UserFavorite::where('user_id', $userId)
+            ->pluck('card_id')
+            ->toArray();
+
         return view('collection', [
             'collection'  => $collection,
             'totalCards'   => $totalCards,
             'totalUnique'  => $totalUnique,
             'rarityStats'  => $rarityStats,
             'allSets'      => $allSets,
+            'favorites'    => $favorites,
         ]);
     }
 
@@ -110,6 +117,40 @@ class CollectionController extends Controller
         User::where('id', $userId)->increment('poketokens', $total);
 
         return back()->with('success', "Tu as vendu {$qty} carte(s) pour {$total} PokéTokens !");
+    }
+
+    public function toggleFavorite(Request $request)
+    {
+        $request->validate([
+            'card_id'   => 'required|string',
+            'card_name' => 'required|string',
+            'set_id'    => 'required|string',
+            'image_url' => 'nullable|string',
+            'rarity'    => 'nullable|string',
+        ]);
+
+        $userId = Auth::id();
+        $cardId = $request->input('card_id');
+
+        $existing = UserFavorite::where('user_id', $userId)
+            ->where('card_id', $cardId)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            return response()->json(['favorited' => false]);
+        }
+
+        UserFavorite::create([
+            'user_id'   => $userId,
+            'card_id'   => $cardId,
+            'card_name' => $request->input('card_name'),
+            'set_id'    => $request->input('set_id'),
+            'image_url' => $request->input('image_url', ''),
+            'rarity'    => $request->input('rarity'),
+        ]);
+
+        return response()->json(['favorited' => true]);
     }
 
     public static function getSellPrice(?string $rarity): int
