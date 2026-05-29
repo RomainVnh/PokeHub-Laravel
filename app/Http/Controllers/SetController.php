@@ -183,9 +183,9 @@ class SetController extends Controller
         $canFreeOpen = !$user->last_premium_booster_at
             || !$user->last_premium_booster_at->isToday();
 
-        if (!$canFreeOpen && $user->poketokens < 500) {
+        if (!$canFreeOpen && $user->poketokens < 30000) {
             return redirect()->route('open.index')
-                ->with('error', 'Tu as déjà utilisé ton booster premium gratuit aujourd\'hui et tu n\'as pas assez de PokéTokens (500 requis).');
+                ->with('error', 'Tu as déjà utilisé ton booster premium gratuit aujourd\'hui et tu n\'as pas assez de PokéTokens (30 000 requis).');
         }
 
         $set = $this->tcg->getSet($setId);
@@ -205,7 +205,7 @@ class SetController extends Controller
         if ($canFreeOpen) {
             $user->update(['last_premium_booster_at' => now()]);
         } else {
-            $user->decrement('poketokens', 500);
+            $user->decrement('poketokens', 30000);
         }
 
         $newCards = $this->trackDrawnCards($drawn, $setId);

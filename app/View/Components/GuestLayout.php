@@ -9,7 +9,7 @@ class GuestLayout extends Component
 {
     public string $banner;
 
-    public function __construct(string $banner = 'banniere2.webp')
+    public function __construct(string $banner = 'banniere2.jpg')
     {
         $this->banner = $banner;
     }

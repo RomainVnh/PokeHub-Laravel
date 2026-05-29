@@ -245,6 +245,130 @@ class ShopItemSeeder extends Seeder
                 'description' => 'Pikachu et ses amis surfent sur la Grande Vague.', 'price' => 5000, 'preview' => '', 'sort_order' => 10,
                 'data' => ['image' => 'images/sleeves/vague.jpg', 'color' => '#60a5fa'],
             ],
+            // New regular sleeves
+            [
+                'slug' => 'sleeve-ghetis', 'category' => 'sleeve', 'name' => 'Ghetis',
+                'description' => 'Le leader de la Team Plasma.', 'price' => 2000, 'preview' => '', 'sort_order' => 15,
+                'data' => ['image' => 'images/sleeves/ghetis.jpg', 'color' => '#6B21A8'],
+            ],
+            [
+                'slug' => 'sleeve-mewtwo-mew', 'category' => 'sleeve', 'name' => 'Mewtwo & Mew',
+                'description' => 'Le duo psychique légendaire.', 'price' => 3500, 'preview' => '', 'sort_order' => 16,
+                'data' => ['image' => 'images/sleeves/mewtwo_mew.jpg', 'color' => '#A855F7'],
+            ],
+            [
+                'slug' => 'sleeve-mimiki', 'category' => 'sleeve', 'name' => 'Mimiqui',
+                'description' => 'Le spectre déguisé en Pikachu.', 'price' => 1800, 'preview' => '', 'sort_order' => 17,
+                'data' => ['image' => 'images/sleeves/mimiki.jpg', 'color' => '#FACC15'],
+            ],
+            [
+                'slug' => 'sleeve-osselet', 'category' => 'sleeve', 'name' => 'Osselait',
+                'description' => 'Le petit guerrier solitaire.', 'price' => 1500, 'preview' => '', 'sort_order' => 18,
+                'data' => ['image' => 'images/sleeves/osselet.jpg', 'color' => '#D4A843'],
+            ],
+            [
+                'slug' => 'sleeve-ronflex', 'category' => 'sleeve', 'name' => 'Ronflex',
+                'description' => 'Le géant endormi.', 'price' => 2500, 'preview' => '', 'sort_order' => 19,
+                'data' => ['image' => 'images/sleeves/ronflex.jpg', 'color' => '#1E3A5F'],
+            ],
+            // Exclusive sleeves (gold tier)
+            [
+                'slug' => 'sleeve-palkia', 'category' => 'sleeve', 'name' => 'Palkia',
+                'description' => 'Maître de l\'espace — Exclusif.', 'price' => 10000, 'preview' => '', 'sort_order' => 50,
+                'data' => ['image' => 'images/sleeves/palkia.jpg', 'color' => '#FFD700', 'exclusive' => true],
+            ],
+            [
+                'slug' => 'sleeve-dialga', 'category' => 'sleeve', 'name' => 'Dialga',
+                'description' => 'Maître du temps — Exclusif.', 'price' => 10000, 'preview' => '', 'sort_order' => 51,
+                'data' => ['image' => 'images/sleeves/dialga.jpg', 'color' => '#FFD700', 'exclusive' => true],
+            ],
+            [
+                'slug' => 'sleeve-arceus', 'category' => 'sleeve', 'name' => 'Arceus',
+                'description' => 'Le Dieu Pokémon — Exclusif.', 'price' => 10000, 'preview' => '', 'sort_order' => 52,
+                'data' => ['image' => 'images/sleeves/arceus.jpg', 'color' => '#FFD700', 'exclusive' => true],
+            ],
+
+            // ═══ AVATARS ════════════════════════════════════════════════
+            [
+                'slug' => 'avatar-bulbizarre', 'category' => 'avatar', 'name' => 'Bulbizarre',
+                'description' => 'Le starter plante originel.', 'price' => 0, 'preview' => '', 'sort_order' => 1,
+                'data' => ['image' => 'images/pfp/bulbizarre.jpg'],
+            ],
+            [
+                'slug' => 'avatar-charbambin', 'category' => 'avatar', 'name' => 'Charbambin',
+                'description' => 'Le petit lézard de feu.', 'price' => 1000, 'preview' => '', 'sort_order' => 2,
+                'data' => ['image' => 'images/pfp/charbambin.jpg'],
+            ],
+            [
+                'slug' => 'avatar-poussacha', 'category' => 'avatar', 'name' => 'Poussacha',
+                'description' => 'Le starter herbe de Paldea.', 'price' => 1200, 'preview' => '', 'sort_order' => 3,
+                'data' => ['image' => 'images/pfp/poussacha.jpg'],
+            ],
+            [
+                'slug' => 'avatar-amphinobi', 'category' => 'avatar', 'name' => 'Amphinobi',
+                'description' => 'Le ninja aquatique.', 'price' => 1500, 'preview' => '', 'sort_order' => 4,
+                'data' => ['image' => 'images/pfp/amphinobi.jpg'],
+            ],
+            [
+                'slug' => 'avatar-arcanin', 'category' => 'avatar', 'name' => 'Arcanin',
+                'description' => 'Le Pokémon légendaire du feu.', 'price' => 1500, 'preview' => '', 'sort_order' => 5,
+                'data' => ['image' => 'images/pfp/arcanin.jpg'],
+            ],
+            [
+                'slug' => 'avatar-locklass', 'category' => 'avatar', 'name' => 'Lokhlass',
+                'description' => 'Le doux transporteur des mers.', 'price' => 1800, 'preview' => '', 'sort_order' => 6,
+                'data' => ['image' => 'images/pfp/locklass.jpg'],
+            ],
+            [
+                'slug' => 'avatar-lucario', 'category' => 'avatar', 'name' => 'Lucario',
+                'description' => 'Le maître de l\'Aura.', 'price' => 2000, 'preview' => '', 'sort_order' => 7,
+                'data' => ['image' => 'images/pfp/lucario.jpg'],
+            ],
+            [
+                'slug' => 'avatar-draco', 'category' => 'avatar', 'name' => 'Draco',
+                'description' => 'Le puissant dragon.', 'price' => 2000, 'preview' => '', 'sort_order' => 8,
+                'data' => ['image' => 'images/pfp/draco.jpg'],
+            ],
+            [
+                'slug' => 'avatar-dracolosse', 'category' => 'avatar', 'name' => 'Dracolosse',
+                'description' => 'Le gardien bienveillant.', 'price' => 2500, 'preview' => '', 'sort_order' => 9,
+                'data' => ['image' => 'images/pfp/dracolosse.jpg'],
+            ],
+            [
+                'slug' => 'avatar-lagron', 'category' => 'avatar', 'name' => 'Galeking',
+                'description' => 'Le titan d\'acier.', 'price' => 2500, 'preview' => '', 'sort_order' => 10,
+                'data' => ['image' => 'images/pfp/lagron.jpg'],
+            ],
+            [
+                'slug' => 'avatar-gardevoir-futur', 'category' => 'avatar', 'name' => 'Gardevoir Futur',
+                'description' => 'La gardienne du futur.', 'price' => 3000, 'preview' => '', 'sort_order' => 11,
+                'data' => ['image' => 'images/pfp/gardevoir_futur.jpg'],
+            ],
+            [
+                'slug' => 'avatar-tyranocif', 'category' => 'avatar', 'name' => 'Tyranocif',
+                'description' => 'Le destructeur des montagnes.', 'price' => 3000, 'preview' => '', 'sort_order' => 12,
+                'data' => ['image' => 'images/pfp/tyranocif.jpg'],
+            ],
+            [
+                'slug' => 'avatar-rayquaza', 'category' => 'avatar', 'name' => 'Rayquaza',
+                'description' => 'Le gardien du ciel.', 'price' => 3500, 'preview' => '', 'sort_order' => 13,
+                'data' => ['image' => 'images/pfp/rayquaza.jpg'],
+            ],
+            [
+                'slug' => 'avatar-dracaufeu-shiny', 'category' => 'avatar', 'name' => 'Dracaufeu Shiny',
+                'description' => 'Le dragon de feu en version chromatique.', 'price' => 4000, 'preview' => '', 'sort_order' => 14,
+                'data' => ['image' => 'images/pfp/dracaufeu_shiny.jpg'],
+            ],
+            [
+                'slug' => 'avatar-mega-dracaufeu-x', 'category' => 'avatar', 'name' => 'Méga-Dracaufeu X',
+                'description' => 'La méga-évolution ultime.', 'price' => 5000, 'preview' => '', 'sort_order' => 15,
+                'data' => ['image' => 'images/pfp/mega_dracaufeu_x.jpg'],
+            ],
+            [
+                'slug' => 'avatar-deoxys', 'category' => 'avatar', 'name' => 'Deoxys',
+                'description' => 'L\'entité extraterrestre — Exclusif.', 'price' => 8000, 'preview' => '', 'sort_order' => 50,
+                'data' => ['image' => 'images/pfp/deoxys.jpg', 'exclusive' => true],
+            ],
         ];
 
         foreach ($items as $item) {
@@ -254,10 +378,8 @@ class ShopItemSeeder extends Seeder
             );
         }
 
-        // Clean up old sleeve slugs
+        // Clean up old slugs that are no longer in the items list
         $currentSlugs = array_column($items, 'slug');
-        ShopItem::where('category', 'sleeve')
-            ->whereNotIn('slug', $currentSlugs)
-            ->delete();
+        ShopItem::whereNotIn('slug', $currentSlugs)->delete();
     }
 }

@@ -243,18 +243,30 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                     @foreach($items['sleeve'] ?? [] as $item)
                         @php
-                            $isOwned    = in_array($item->id, $owned);
-                            $isActive   = $activeSleeve === $item->slug;
-                            $sleeveImg  = $item->data['image'] ?? null;
-                            $bgCss      = $item->data['background'] ?? 'linear-gradient(135deg, #1a1d25, #2a2d35)';
-                            $colorCss   = $item->data['color'] ?? '#6B7280';
+                            $isOwned      = in_array($item->id, $owned);
+                            $isActive     = $activeSleeve === $item->slug;
+                            $sleeveImg    = $item->data['image'] ?? null;
+                            $bgCss        = $item->data['background'] ?? 'linear-gradient(135deg, #1a1d25, #2a2d35)';
+                            $colorCss     = $item->data['color'] ?? '#6B7280';
+                            $isExclusive  = $item->data['exclusive'] ?? false;
                         @endphp
                         <div class="relative rounded-2xl overflow-hidden transition-all group"
-                             style="background: var(--bg-card); border: 1px solid {{ $isActive ? 'rgba(239,68,68,0.4)' : 'var(--border)' }};">
+                             style="background: {{ $isExclusive ? 'linear-gradient(145deg, rgba(255,215,0,0.06), var(--bg-card) 30%, var(--bg-card) 70%, rgba(255,215,0,0.06))' : 'var(--bg-card)' }}; border: 1px solid {{ $isActive ? 'rgba(239,68,68,0.4)' : ($isExclusive ? 'rgba(255,215,0,0.35)' : 'var(--border)') }};">
+
+                            @if($isExclusive)
+                                <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #d4a843, #ffd700, #d4a843);"></div>
+                                <div class="absolute top-3 left-3 z-10">
+                                    <span class="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wider uppercase"
+                                          style="background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(212,168,67,0.2)); color: #ffd700; border: 1px solid rgba(255,215,0,0.4);">
+                                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8 416.2 508.3c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L380.9 150.3 316.9 18z"/></svg>
+                                        Exclusif
+                                    </span>
+                                </div>
+                            @endif
 
                             {{-- Sleeve preview (card back shape) --}}
                             <div class="p-5 flex justify-center">
-                                <div class="sleeve-card-preview" style="border-color: {{ $colorCss }}40;">
+                                <div class="sleeve-card-preview {{ $isExclusive ? 'sleeve-exclusive' : '' }}" style="border-color: {{ $isExclusive ? 'rgba(255,215,0,0.5)' : $colorCss . '40' }};">
                                     @if($sleeveImg)
                                         <img src="{{ asset($sleeveImg) }}" alt="{{ $item->name }}" class="sleeve-card-img" />
                                     @else
@@ -327,16 +339,28 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
                     @foreach($items['avatar'] ?? [] as $item)
                         @php
-                            $isOwned   = in_array($item->id, $owned);
-                            $avatarImg = $item->data['image'] ?? '';
-                            $isActive  = auth()->user()->avatar && str_contains(auth()->user()->avatar, basename($avatarImg));
+                            $isOwned      = in_array($item->id, $owned);
+                            $avatarImg    = $item->data['image'] ?? '';
+                            $isActive     = auth()->user()->avatar && str_contains(auth()->user()->avatar, basename($avatarImg));
+                            $isExclusive  = $item->data['exclusive'] ?? false;
                         @endphp
                         <div class="relative rounded-2xl overflow-hidden transition-all group"
-                             style="background: var(--bg-card); border: 1px solid {{ $isActive ? 'rgba(34,197,94,0.4)' : 'var(--border)' }};">
+                             style="background: {{ $isExclusive ? 'linear-gradient(145deg, rgba(255,215,0,0.06), var(--bg-card) 30%, var(--bg-card) 70%, rgba(255,215,0,0.06))' : 'var(--bg-card)' }}; border: 1px solid {{ $isActive ? 'rgba(34,197,94,0.4)' : ($isExclusive ? 'rgba(255,215,0,0.35)' : 'var(--border)') }};">
+
+                            @if($isExclusive)
+                                <div class="absolute top-0 left-0 right-0 h-1" style="background: linear-gradient(90deg, #d4a843, #ffd700, #d4a843);"></div>
+                                <div class="absolute top-3 left-3 z-10">
+                                    <span class="flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold tracking-wider uppercase"
+                                          style="background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(212,168,67,0.2)); color: #ffd700; border: 1px solid rgba(255,215,0,0.4);">
+                                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8 416.2 508.3c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L380.9 150.3 316.9 18z"/></svg>
+                                        Exclusif
+                                    </span>
+                                </div>
+                            @endif
 
                             {{-- Avatar preview (round) --}}
                             <div class="p-5 flex justify-center">
-                                <div class="avatar-shop-preview {{ $isActive ? 'avatar-active-ring' : '' }}">
+                                <div class="avatar-shop-preview {{ $isActive ? 'avatar-active-ring' : '' }} {{ $isExclusive ? 'avatar-exclusive' : '' }}">
                                     <img src="{{ asset($avatarImg) }}" alt="{{ $item->name }}" class="w-full h-full object-cover" />
                                 </div>
                             </div>

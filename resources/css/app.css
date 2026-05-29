@@ -1178,6 +1178,47 @@ main.flex-1 {
   box-shadow: 0 0 12px rgba(34,197,94,0.4), 0 4px 16px rgba(0,0,0,0.3);
 }
 
+/* ── Exclusive (gold) item styling ─────────────────────────────────── */
+@keyframes exclusive-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.sleeve-exclusive {
+  border-color: rgba(255,215,0,0.5) !important;
+  box-shadow: 0 0 20px rgba(255,215,0,0.15), 0 4px 16px rgba(0,0,0,0.3);
+}
+.sleeve-exclusive::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255,215,0,0.08) 45%,
+    rgba(255,215,0,0.15) 50%,
+    rgba(255,215,0,0.08) 55%,
+    transparent 65%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: exclusive-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+.group:hover .sleeve-exclusive {
+  box-shadow: 0 0 28px rgba(255,215,0,0.25), 0 6px 20px rgba(0,0,0,0.4);
+  border-color: rgba(255,215,0,0.7) !important;
+}
+.avatar-exclusive {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 16px rgba(255,215,0,0.3), 0 4px 16px rgba(0,0,0,0.3);
+}
+.group:hover .avatar-exclusive {
+  box-shadow: 0 0 24px rgba(255,215,0,0.4), 0 6px 20px rgba(0,0,0,0.4);
+}
+
 /* Booster card back plastic effect */
 .sleeve-back-plastic {
   position: absolute;

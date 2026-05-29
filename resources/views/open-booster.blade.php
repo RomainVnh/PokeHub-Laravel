@@ -360,7 +360,7 @@
                                 @else
                                     <div class="flex items-center gap-1.5">
                                         <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-4 h-4 object-contain" />
-                                        <span class="text-sm font-bold" style="color: #d4a843;">500 PokéTokens</span>
+                                        <span class="text-sm font-bold" style="color: #d4a843;">30 000 PokéTokens</span>
                                     </div>
                                 @endif
                             </div>
@@ -371,7 +371,7 @@
                                 </div>
                                 <div class="flex items-center justify-between mt-2 pt-2" style="border-top: 1px solid var(--border);">
                                     <span class="text-xs font-medium" style="color: var(--text-muted);">Après achat</span>
-                                    <span class="text-sm font-bold" style="color: {{ auth()->user()->poketokens >= 500 ? '#22c55e' : '#f87171' }};">{{ number_format(max(0, auth()->user()->poketokens - 500), 0, ',', ' ') }}</span>
+                                    <span class="text-sm font-bold" style="color: {{ auth()->user()->poketokens >= 30000 ? '#22c55e' : '#f87171' }};">{{ number_format(max(0, auth()->user()->poketokens - 30000), 0, ',', ' ') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -395,7 +395,7 @@
                                     Ouvrir
                                 </a>
                             </div>
-                        @elseif(auth()->user()->poketokens >= 500)
+                        @elseif(auth()->user()->poketokens >= 30000)
                             <div class="flex gap-3">
                                 <button @click="premiumConfirm = false" class="btn btn-surface flex-1">Annuler</button>
                                 <form action="{{ route('open.booster.premium', $set['id']) }}" method="POST" class="flex-1">
