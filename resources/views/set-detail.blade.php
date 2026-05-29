@@ -115,7 +115,7 @@
                                         $tier = 'ultra';
                                     }
                                 @endphp
-                                <div class="card-thumb anim-fade-up {{ !$isCollected && Auth::check() ? 'card-not-collected' : '' }} {{ $tier ? 'card-tier-' . $tier : '' }}"
+                                <div class="card-thumb group anim-fade-up {{ !$isCollected && Auth::check() ? 'card-not-collected' : '' }} {{ $tier ? 'card-tier-' . $tier : '' }}"
                                      style="animation-delay: {{ min($index * 15, 500) }}ms"
                                      @mouseenter="showPopup($event, @js($card))"
                                      @mouseleave="hidePopup()"
@@ -131,6 +131,17 @@
                                             @if($tier === 'secret') ✦ @elseif($tier === 'illustration') ★ @else ◆ @endif
                                         </span>
                                     @endif
+                                    @auth
+                                        <button @click.stop="toggleFavorite(@js($card), $event)"
+                                                class="absolute top-1 left-1 w-5 h-5 rounded-full flex items-center justify-center transition-all z-10 cursor-pointer"
+                                                :class="isFavorite('{{ $card['id'] }}') ? 'opacity-100' : 'opacity-0 group-hover:opacity-70'"
+                                                :style="isFavorite('{{ $card['id'] }}')
+                                                    ? 'background: rgba(239,68,68,0.85); color: white;'
+                                                    : 'background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.7);'"
+                                                x-cloak>
+                                            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+                                        </button>
+                                    @endauth
                                 </div>
                             @endforeach
                         </div>
@@ -420,6 +431,7 @@
         function setDetail() {
             const collectedCards = @json($collectedCards);
             const sellPrices = @json($sellPricesMap);
+            const initialFavorites = @json($favorites ?? []);
 
             return {
                 popup: { visible: false, card: null, x: 0, y: 0 },
@@ -431,6 +443,38 @@
                 sellPrice: 0,
                 collectedCards,
                 sellPrices,
+                favorites: [...initialFavorites],
+
+                isFavorite(cardId) {
+                    return this.favorites.includes(cardId);
+                },
+
+                async toggleFavorite(card, event) {
+                    event.stopPropagation();
+                    try {
+                        const res = await fetch('{{ route('collection.favorite') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                                'Accept': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                card_id: card.id,
+                                card_name: card.name,
+                                set_id: '{{ $set['id'] }}',
+                                image_url: card.images?.small || '',
+                                rarity: card.rarity || null,
+                            }),
+                        });
+                        const data = await res.json();
+                        if (data.favorited) {
+                            this.favorites.push(card.id);
+                        } else {
+                            this.favorites = this.favorites.filter(id => id !== card.id);
+                        }
+                    } catch (e) { console.error(e); }
+                },
 
                 typeColor(type) {
                     const colors = {

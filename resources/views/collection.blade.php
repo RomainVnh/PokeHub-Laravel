@@ -5,18 +5,49 @@
         search: '',
         filterSet: 'all',
         filterRarity: 'all',
+        filterFavorites: false,
         sortBy: 'recent',
         sellModal: false,
         sellCard: null,
         sellQty: 1,
         sellMaxQty: 0,
         sellPrice: 0,
+        favorites: @json($favorites ?? []),
         openSell(card) {
             this.sellCard = card;
             this.sellMaxQty = card.quantity - 1;
             this.sellQty = 1;
             this.sellPrice = card.sellPrice;
             this.sellModal = true;
+        },
+        isFavorite(cardId) {
+            return this.favorites.includes(cardId);
+        },
+        async toggleFavorite(card, event) {
+            event.stopPropagation();
+            try {
+                const res = await fetch('{{ route('collection.favorite') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        card_id: card.card_id,
+                        card_name: card.card_name,
+                        set_id: card.set_id,
+                        image_url: card.image_url || '',
+                        rarity: card.rarity || null,
+                    }),
+                });
+                const data = await res.json();
+                if (data.favorited) {
+                    this.favorites.push(card.card_id);
+                } else {
+                    this.favorites = this.favorites.filter(id => id !== card.card_id);
+                }
+            } catch (e) { console.error(e); }
         }
     }">
 
@@ -68,6 +99,14 @@
                         <option value="rarity">Par rareté</option>
                         <option value="quantity">Par quantité</option>
                     </select>
+                    <button @click="filterFavorites = !filterFavorites"
+                            class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                            :style="filterFavorites
+                                ? 'background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3);'
+                                : 'background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border);'">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+                        Favoris
+                    </button>
                 </div>
             </div>
         </div>
@@ -106,7 +145,7 @@
                                         $imgUrl = 'https://assets.tcgdex.net/en/' . $card['set_id'] . '/' . ($parts[1] ?? $card['card_id']) . '/low.webp';
                                     }
                                 @endphp
-                                <div x-show="(filterRarity === 'all' || '{{ addslashes($card['rarity'] ?? '') }}' === filterRarity) && (!search || '{{ strtolower(addslashes($card['card_name'])) }}'.includes(search.toLowerCase()))"
+                                <div x-show="(filterRarity === 'all' || '{{ addslashes($card['rarity'] ?? '') }}' === filterRarity) && (!search || '{{ strtolower(addslashes($card['card_name'])) }}'.includes(search.toLowerCase())) && (!filterFavorites || isFavorite('{{ addslashes($card['card_id']) }}'))"
                                      class="relative group {{ $card['quantity'] > 1 ? 'cursor-pointer' : '' }}"
                                      @if($card['quantity'] > 1) @click="openSell(@js($card))" @endif>
                                     <div class="card-item rounded-lg overflow-hidden border transition-all duration-200"
@@ -117,6 +156,15 @@
                                              loading="lazy"
                                              onerror="this.style.opacity='0.3'" />
                                     </div>
+                                    {{-- Favorite heart --}}
+                                    <button @click="toggleFavorite(@js($card), $event)"
+                                            class="absolute top-1 left-1 w-6 h-6 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100"
+                                            :class="isFavorite('{{ addslashes($card['card_id']) }}') ? 'opacity-100' : ''"
+                                            :style="isFavorite('{{ addslashes($card['card_id']) }}')
+                                                ? 'background: rgba(239,68,68,0.85); color: white;'
+                                                : 'background: rgba(0,0,0,0.6); color: rgba(255,255,255,0.7);'">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+                                    </button>
                                     @if($card['quantity'] > 1)
                                         <span class="absolute -top-1 -right-1 text-[10px] font-black px-1.5 py-0.5 rounded-full"
                                               style="background: var(--gold); color: #000;">

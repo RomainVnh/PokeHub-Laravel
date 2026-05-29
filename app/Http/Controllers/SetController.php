@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\CollectionController;
 use App\Models\UserCard;
+use App\Models\UserFavorite;
 use App\Services\PokemonTcgService;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +19,7 @@ class SetController extends Controller
      */
     public function home()
     {
+        set_time_limit(180);
         $sets = $this->tcg->getAllSets();
         $featured = array_slice($sets, 0, 12);
 
@@ -33,6 +35,7 @@ class SetController extends Controller
      */
     public function encyclopedia()
     {
+        set_time_limit(180);
         $sets = $this->tcg->getAllSets();
 
         $series = [];
@@ -62,6 +65,8 @@ class SetController extends Controller
      */
     public function show(string $setId)
     {
+        set_time_limit(180);
+
         $set = $this->tcg->getSet($setId);
 
         if (!$set) {
@@ -100,12 +105,17 @@ class SetController extends Controller
             }
         }
 
-        // Get collected cards for authenticated users
+        // Get collected cards and favorites for authenticated users
         $collectedCards = [];
+        $favorites = [];
         if (Auth::check()) {
             $collectedCards = UserCard::where('user_id', Auth::id())
                 ->where('set_id', $setId)
                 ->pluck('quantity', 'card_id')
+                ->toArray();
+
+            $favorites = UserFavorite::where('user_id', Auth::id())
+                ->pluck('card_id')
                 ->toArray();
         }
 
@@ -115,6 +125,7 @@ class SetController extends Controller
             'grouped'        => $grouped,
             'counts'         => $counts,
             'collectedCards' => $collectedCards,
+            'favorites'      => $favorites,
         ]);
     }
 
@@ -123,6 +134,7 @@ class SetController extends Controller
      */
     public function openIndex()
     {
+        set_time_limit(180);
         $sets = $this->tcg->getAllSets();
 
         return view('open-index', [
@@ -135,6 +147,7 @@ class SetController extends Controller
      */
     public function openBooster(string $setId)
     {
+        set_time_limit(180);
         $set = $this->tcg->getSet($setId);
 
         if (!$set) {
@@ -164,6 +177,7 @@ class SetController extends Controller
      */
     public function openPremiumBooster(string $setId)
     {
+        set_time_limit(180);
         $user = Auth::user();
 
         $canFreeOpen = !$user->last_premium_booster_at
