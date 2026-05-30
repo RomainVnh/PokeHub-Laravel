@@ -53,29 +53,32 @@
     {{-- ═══ Sidebar ═══════════════════════════════════════════════════ --}}
     <aside
         :class="[
-            collapsed ? 'w-[88px]' : 'w-[260px]',
+            collapsed ? 'sidebar-collapsed' : 'sidebar-expanded',
             mobileMenu ? 'mobile-sidebar-open' : '',
             forceSidebar ? 'sidebar-force' : 'sidebar-responsive'
         ]"
-        class="sidebar-main relative flex-shrink-0 h-full flex flex-col transition-all duration-300 overflow-hidden"
+        class="sidebar-main flex-shrink-0 h-full flex flex-col transition-all duration-300 overflow-hidden"
         style="background: var(--bg-primary); border-right: 1px solid var(--border);"
     >
-        {{-- Logo --}}
-        <div class="pt-4 pb-2 flex justify-center px-4">
-            <a href="/" class="block">
+        {{-- ── Header: logo + Menu label + collapse toggle ────────── --}}
+        <div class="sidebar-header">
+            <a href="/" class="sidebar-logo-link">
                 <img x-show="!collapsed" x-transition.opacity
                      src="{{ asset('images/logopokehub_2.png') }}"
-                     alt="PokeHub"
-                     class="h-28 object-contain" />
+                     alt="PokeHub" class="sidebar-logo-full" />
                 <img x-show="collapsed"
                      src="{{ asset('images/logoreduit_transparent.png') }}"
-                     alt="PokeHub"
-                     style="height: 40px; width: 40px; object-fit: contain;" />
+                     alt="PokeHub" class="sidebar-logo-icon" />
             </a>
+            <button @click="collapsed = !collapsed"
+                    class="sidebar-toggle-btn" title="Réduire / agrandir">
+                <svg x-show="!collapsed" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                <svg x-show="collapsed" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
         </div>
 
-        {{-- Nav --}}
-        <nav class="flex-1 px-3 pt-1 flex flex-col justify-center gap-1">
+        {{-- ── Navigation ─────────────────────────────────────────── --}}
+        <nav class="sidebar-nav">
             @php
                 $navItems = [
                     ['href' => '/',             'label' => 'Accueil',       'vb' => '576', 'icon' => 'M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V360c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32V472c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z'],
@@ -95,37 +98,32 @@
                 @php
                     $active = ($item['href'] === '/' && $currentPath === '/') || ($item['href'] !== '/' && str_starts_with($currentPath, $item['href']));
                 @endphp
-                <a href="{{ $item['href'] }}" class="nav-link {{ $active ? 'active' : '' }}" @click="mobileMenu = false">
-                    <svg class="w-5 h-5 flex-shrink-0 nav-icon" fill="currentColor" viewBox="0 0 {{ $item['vb'] }} 512">
-                        <path d="{{ $item['icon'] }}"/>
-                    </svg>
-                    <span x-show="!collapsed" x-transition.opacity class="whitespace-nowrap">{{ $item['label'] }}</span>
-                    @if($active)
-                        <span x-show="!collapsed" class="ml-auto w-1.5 h-1.5 rounded-full bg-white"></span>
-                    @endif
+                <a href="{{ $item['href'] }}" class="sidebar-item {{ $active ? 'active' : '' }}" @click="mobileMenu = false"
+                   :title="collapsed ? '{{ $item['label'] }}' : ''">
+                    <span class="sidebar-item-icon">
+                        <svg class="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 {{ $item['vb'] }} 512">
+                            <path d="{{ $item['icon'] }}"/>
+                        </svg>
+                    </span>
+                    <span x-show="!collapsed" x-transition.opacity class="sidebar-item-label">{{ $item['label'] }}</span>
                 </a>
             @endforeach
         </nav>
 
-        {{-- Bottom --}}
-        <div class="px-3 pb-3 flex flex-col gap-1">
-            <div class="separator mx-2 mb-2"></div>
-
+        {{-- ── Bottom section ─────────────────────────────────────── --}}
+        <div class="sidebar-footer">
             {{-- Token display --}}
             @auth
-                <div class="token-display mx-1 mb-1" x-show="!collapsed">
-                    <div class="token-icon">
-                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" style="width: 100%; height: 100%; object-fit: contain;" />
+                <a href="/shop" class="sidebar-token-pill" x-show="!collapsed" @click="mobileMenu = false">
+                    <div class="sidebar-token-icon">
+                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-full h-full object-contain" />
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] font-medium" style="color: var(--text-muted);">PokéTokens</p>
-                        <p class="text-sm font-bold" style="color: #d4a843;">{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }}</p>
-                    </div>
-                </div>
-                <div x-show="collapsed" class="flex justify-center mb-1">
-                    <div class="token-icon" title="{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }} PokéTokens" style="width: 32px; height: 32px;">
-                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" style="width: 16px; height: 16px; object-fit: contain;" />
-                    </div>
+                    <span class="sidebar-token-amount">{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }}</span>
+                </a>
+                <div x-show="collapsed" class="flex justify-center">
+                    <a href="/shop" class="sidebar-item-icon" title="{{ number_format(auth()->user()->poketokens, 0, ',', ' ') }} PokéTokens" style="color: #d4a843;" @click="mobileMenu = false">
+                        <img src="{{ asset('images/poketoken.png') }}" alt="PokéToken" class="w-4 h-4 object-contain" />
+                    </a>
                 </div>
             @endauth
 
@@ -140,90 +138,78 @@
                         $activeTitle = \App\Models\ShopItem::where('slug', auth()->user()->active_title)->first();
                     }
                 @endphp
-                {{-- Expanded: full profile card --}}
-                <div x-show="!collapsed" class="flex items-center gap-2">
-                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all flex-1 min-w-0" style="background: var(--bg-surface); border: 1px solid var(--border); text-decoration: none;" @click="mobileMenu = false">
-                        @if(auth()->user()->avatar)
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden"
-                                 style="background: var(--bg-card);{{ $activeFrame ? ' border: ' . ($activeFrame->data['border'] ?? '') . '; box-shadow: ' . ($activeFrame->data['shadow'] ?? 'none') . ';' : '' }}">
-                                <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-6 h-6 object-contain" />
-                            </div>
-                        @else
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold"
-                                 style="background: var(--accent); color: var(--text-inverse);{{ $activeFrame ? ' border: ' . ($activeFrame->data['border'] ?? '') . '; box-shadow: ' . ($activeFrame->data['shadow'] ?? 'none') . ';' : '' }}">
-                                {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
-                            </div>
-                        @endif
-                        <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold truncate" style="color: var(--text-primary);">{{ auth()->user()->name ?? 'Dresseur' }}</p>
-                            @if($activeTitle)
-                                <p class="text-[10px] font-extrabold truncate {{ ($activeTitle->data['animated'] ?? false) ? 'title-animated' : '' }}" style="background: {{ $activeTitle->data['gradient'] ?? '' }}; background-size: {{ ($activeTitle->data['animated'] ?? false) ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $activeTitle->data['shadow'] ?? 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }};">{{ $activeTitle->name }}</p>
+
+                {{-- Expanded: profile card --}}
+                <div x-show="!collapsed" class="sidebar-profile-card">
+                    <a href="{{ route('profile.edit') }}" class="sidebar-profile-link" @click="mobileMenu = false">
+                        <div class="sidebar-profile-avatar"
+                             style="{{ $activeFrame ? 'border: ' . ($activeFrame->data['border'] ?? '') . '; box-shadow: ' . ($activeFrame->data['shadow'] ?? 'none') . ';' : '' }}">
+                            @if(auth()->user()->avatar)
+                                <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-full h-full object-cover" />
                             @else
-                                <p class="text-[10px] font-medium" style="color: var(--text-muted);">Mon profil</p>
+                                <span class="text-xs font-bold" style="color: var(--text-inverse); background: var(--accent); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                                    {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="sidebar-profile-info">
+                            <p class="sidebar-profile-name">{{ auth()->user()->name ?? 'Dresseur' }}</p>
+                            @if($activeTitle)
+                                <p class="sidebar-profile-title {{ ($activeTitle->data['animated'] ?? false) ? 'title-animated' : '' }}" style="background: {{ $activeTitle->data['gradient'] ?? '' }}; background-size: {{ ($activeTitle->data['animated'] ?? false) ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $activeTitle->data['shadow'] ?? 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' }};">{{ $activeTitle->name }}</p>
+                            @else
+                                <p class="sidebar-profile-title" style="color: var(--text-muted);">Mon profil</p>
                             @endif
                         </div>
                     </a>
-                    <button @click="settingsOpen = !settingsOpen"
-                            class="flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0 transition-all cursor-pointer"
-                            style="color: var(--text-muted); opacity: 0.5;" title="Paramètres">
-                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>
-                    </button>
+                    <div class="sidebar-profile-actions">
+                        <button @click="settingsOpen = !settingsOpen"
+                                class="sidebar-action-btn" title="Paramètres">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>
+                        </button>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="sidebar-action-btn" title="Déconnexion">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                {{-- Collapsed: just a small avatar icon --}}
-                <div x-show="collapsed" class="flex justify-center mb-1">
-                    <a href="{{ route('profile.edit') }}" class="block" title="{{ auth()->user()->name ?? 'Mon profil' }}">
+                {{-- Collapsed: avatar only --}}
+                <div x-show="collapsed" class="flex justify-center">
+                    <a href="{{ route('profile.edit') }}" class="sidebar-avatar-collapsed" title="{{ auth()->user()->name ?? 'Mon profil' }}">
                         @if(auth()->user()->avatar)
-                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-lg object-cover" style="border: 1.5px solid var(--border);" />
+                            <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-full h-full object-cover rounded-full" />
                         @else
-                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold" style="background: var(--accent); color: var(--text-inverse);">
-                                {{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}
-                            </div>
+                            <span class="text-[11px] font-bold" style="color: var(--text-inverse);">{{ strtoupper(substr(auth()->user()->name ?? auth()->user()->email, 0, 1)) }}</span>
                         @endif
                     </a>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" x-show="!collapsed">
-                    @csrf
-                    <button type="submit" class="nav-link w-full text-xs" style="color: var(--text-muted);">
-                        <svg class="w-[14px] h-[14px] flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
-                            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/>
-                        </svg>
-                        <span class="whitespace-nowrap">Déconnexion</span>
-                    </button>
-                </form>
             @else
-                <a href="{{ route('login') }}" class="nav-link" style="color: var(--text-secondary);" @click="mobileMenu = false">
-                    <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 512 512">
-                        <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/>
-                    </svg>
-                    <span x-show="!collapsed" class="whitespace-nowrap font-semibold">Connexion</span>
+                <a href="{{ route('login') }}" class="sidebar-item" @click="mobileMenu = false"
+                   :title="collapsed ? 'Connexion' : ''">
+                    <span class="sidebar-item-icon">
+                        <svg class="w-[18px] h-[18px]" fill="currentColor" viewBox="0 0 512 512">
+                            <path d="M217.9 105.9L340.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L217.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1L32 320c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM352 416l64 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c53 0 96 43 96 96l0 256c0 53-43 96-96 96l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/>
+                        </svg>
+                    </span>
+                    <span x-show="!collapsed" x-transition.opacity class="sidebar-item-label font-semibold">Connexion</span>
                 </a>
             @endauth
 
             {{-- Theme toggle --}}
-            <div class="flex items-center justify-center mt-1">
-                <div class="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-lg"
-                     style="color: var(--text-muted);"
+            <div class="sidebar-theme-row">
+                <div class="sidebar-theme-toggle"
                      @click="(() => {
                         const html = document.documentElement;
                         const isLight = html.getAttribute('data-theme') === 'light';
                         if (isLight) { html.removeAttribute('data-theme'); localStorage.setItem('pokehub_theme','dark'); }
                         else { html.setAttribute('data-theme','light'); localStorage.setItem('pokehub_theme','light'); }
                      })()">
-                    <div class="theme-toggle" :style="collapsed ? 'width:36px;height:20px' : ''" title="Changer de thème"></div>
-                    <svg x-show="!collapsed" class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 384 512">
-                        <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
-                    </svg>
+                    <div class="theme-toggle" :style="collapsed ? 'width:32px;height:18px' : ''" title="Changer de thème"></div>
+                    <span x-show="!collapsed" class="text-[11px] font-medium" style="color: var(--text-muted);">Thème</span>
                 </div>
             </div>
         </div>
-
-        {{-- Collapse toggle — teardrop outside sidebar --}}
-        <button @click="collapsed = !collapsed"
-                class="sidebar-collapse-teardrop"
-                title="Réduire / agrandir">
-            <svg x-show="!collapsed" class="w-3 h-3" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
-            <svg x-show="collapsed" class="w-3 h-3" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
-        </button>
     </aside>
 
     {{-- ═══ Main ══════════════════════════════════════════════════════ --}}
