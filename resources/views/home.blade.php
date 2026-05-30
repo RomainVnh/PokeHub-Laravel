@@ -15,12 +15,12 @@
                 <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8"
                      style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);">
                     <span class="w-2 h-2 rounded-full animate-pulse" style="background: var(--green);"></span>
-                    <span class="text-sm font-medium text-white">{{ $totalSets }} éditions disponibles</span>
+                    <span class="text-sm font-medium" style="color: var(--text-primary);">{{ $totalSets }} éditions disponibles</span>
                 </div>
 
-                <h1 class="text-5xl md:text-6xl font-black text-white mb-5 leading-[1.1] tracking-tight">
+                <h1 class="text-5xl md:text-6xl font-black mb-5 leading-[1.1] tracking-tight" style="color: var(--text-primary);">
                     Explore et collecte<br>
-                    <span class="text-white">chaque carte Pokémon</span>
+                    <span style="color: var(--text-primary);">chaque carte Pokémon</span>
                 </h1>
 
                 <p class="text-lg leading-relaxed mb-10 max-w-lg" style="color: var(--text-secondary);">
@@ -56,8 +56,8 @@
             <div class="max-w-7xl mx-auto">
                 <div class="flex items-end justify-between mb-8">
                     <div>
-                        <span class="label-xs block mb-2" style="color: white;">Communauté</span>
-                        <h2 class="text-2xl font-extrabold text-white">Actualités</h2>
+                        <span class="label-xs block mb-2" style="color: var(--text-secondary);">Communauté</span>
+                        <h2 class="text-2xl font-extrabold" style="color: var(--text-primary);">Actualités</h2>
                     </div>
                 </div>
 
@@ -147,13 +147,13 @@
             <div class="max-w-7xl mx-auto">
                 <div class="flex items-end justify-between mb-8">
                     <div>
-                        <span class="label-xs block mb-2" style="color: white;">Explorer</span>
-                        <h2 class="text-2xl font-extrabold text-white">Dernières éditions</h2>
+                        <span class="label-xs block mb-2" style="color: var(--text-secondary);">Explorer</span>
+                        <h2 class="text-2xl font-extrabold" style="color: var(--text-primary);">Dernières éditions</h2>
                     </div>
                     <a href="{{ route('encyclopedia') }}" class="flex items-center gap-2 text-sm font-semibold transition-colors"
                        style="color: var(--text-primary);"
                        onmouseover="this.style.color='var(--text-secondary)'"
-                       onmouseout="this.style.color='var(--gold)'"
+                       onmouseout="this.style.color='var(--gold)'">
                         Voir toutes
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                     </a>
@@ -170,13 +170,13 @@
                                      onerror="this.style.opacity='0'" />
                             </div>
                             <div class="p-4 space-y-2">
-                                <p class="text-sm font-bold text-white line-clamp-1">{{ $set['name'] }}</p>
+                                <p class="text-sm font-bold line-clamp-1" style="color: var(--text-primary);">{{ $set['name'] }}</p>
                                 <p class="text-[11px]" style="color: var(--text-muted);">
                                     {{ $set['series'] }} · {{ \Carbon\Carbon::parse($set['releaseDate'])->format('Y') }}
                                 </p>
                                 <div class="pt-1">
                                     <span class="text-[11px] font-bold px-2.5 py-1 rounded-full"
-                                          style="color: white; background: var(--accent-bg);">
+                                          style="color: var(--text-primary); background: var(--accent-bg);">
                                         {{ $set['printedTotal'] }} cartes
                                     </span>
                                 </div>
@@ -247,8 +247,8 @@
                 @endphp
                 @foreach($stats as $stat)
                     <div class="stat-card">
-                        <svg class="w-6 h-6 mx-auto mb-3" style="color: white;" fill="currentColor" viewBox="0 0 {{ $stat['vb'] ?? '576' }} 512"><path d="{{ $stat['icon'] }}"/></svg>
-                        <p class="text-3xl font-black mb-1 text-white">{{ $stat['value'] }}</p>
+                        <svg class="w-6 h-6 mx-auto mb-3" style="color: var(--text-primary);" fill="currentColor" viewBox="0 0 {{ $stat['vb'] ?? '576' }} 512"><path d="{{ $stat['icon'] }}"/></svg>
+                        <p class="text-3xl font-black mb-1" style="color: var(--text-primary);">{{ $stat['value'] }}</p>
                         <p class="text-sm" style="color: var(--text-muted);">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
@@ -261,7 +261,7 @@
                  style="background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-elevated) 100%); border: 1px solid var(--border);">
                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px"
                      style="background: linear-gradient(90deg, transparent, var(--gold), transparent);"></div>
-                <h2 class="text-2xl font-extrabold text-white mb-3">Prêt à constituer ta collection ?</h2>
+                <h2 class="text-2xl font-extrabold mb-3" style="color: var(--text-primary);">Prêt à constituer ta collection ?</h2>
                 <p class="text-sm max-w-md mx-auto mb-8" style="color: var(--text-muted);">
                     Crée ton compte gratuitement et commence à ouvrir des boosters pour découvrir des cartes rares.
                 </p>
