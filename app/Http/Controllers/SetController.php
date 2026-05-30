@@ -169,6 +169,7 @@ class SetController extends Controller
         $xpGained = 0;
         $levelsGained = 0;
         $newLevel = null;
+        $levelRewards = [];
         if (Auth::check()) {
             $user = Auth::user();
             $xpGained = User::calculateBoosterXp($drawn);
@@ -176,6 +177,10 @@ class SetController extends Controller
             $levelsGained = $user->awardXp($xpGained);
             if ($levelsGained > 0) {
                 $newLevel = $user->level;
+                // Collect rewards for all levels gained
+                for ($l = $levelBefore + 1; $l <= $user->level; $l++) {
+                    $levelRewards[$l] = User::getLevelRewards($l);
+                }
             }
         }
 
@@ -187,6 +192,7 @@ class SetController extends Controller
             'xpGained'     => $xpGained,
             'levelsGained' => $levelsGained,
             'newLevel'     => $newLevel,
+            'levelRewards' => $levelRewards,
         ]);
     }
 
@@ -232,12 +238,16 @@ class SetController extends Controller
         $xpGained = 0;
         $levelsGained = 0;
         $newLevel = null;
+        $levelRewards = [];
         $user = Auth::user();
         $xpGained = (int) (User::calculateBoosterXp($drawn) * 1.5);
         $levelBefore = $user->level;
         $levelsGained = $user->awardXp($xpGained);
         if ($levelsGained > 0) {
             $newLevel = $user->level;
+            for ($l = $levelBefore + 1; $l <= $user->level; $l++) {
+                $levelRewards[$l] = User::getLevelRewards($l);
+            }
         }
 
         return view('open-booster', [
@@ -248,6 +258,7 @@ class SetController extends Controller
             'xpGained'     => $xpGained,
             'levelsGained' => $levelsGained,
             'newLevel'     => $newLevel,
+            'levelRewards' => $levelRewards,
         ]);
     }
 

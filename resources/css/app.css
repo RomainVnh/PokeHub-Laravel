@@ -1320,11 +1320,13 @@ main.flex-1 {
 }
 
 /* ── XP / Level bar (floating top-right) ──────────────────────────── */
-.xp-bar-floating {
+.xp-bar-wrapper {
   position: fixed;
   top: 10px;
   right: 14px;
   z-index: 30;
+}
+.xp-bar-floating {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1386,9 +1388,11 @@ main.flex-1 {
 }
 
 @media (max-width: 768px) {
-  .xp-bar-floating {
+  .xp-bar-wrapper {
     right: 6px;
     top: 62px;
+  }
+  .xp-bar-floating {
     padding: 3px 6px 3px 3px;
     gap: 4px;
   }

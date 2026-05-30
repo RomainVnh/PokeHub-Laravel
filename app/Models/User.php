@@ -58,7 +58,55 @@ class User extends Authenticatable
     }
 
     /**
-     * Award XP and handle level-ups. Returns number of levels gained.
+     * Get the rewards for a given level.
+     */
+    public static function getLevelRewards(int $level): array
+    {
+        $rewards = ['tokens' => 500];
+
+        if ($level == 10) {
+            $rewards['tokens'] = 1000;
+        } elseif ($level == 20) {
+            $rewards['tokens'] = 2000;
+            $rewards['avatar'] = [
+                'slug'  => 'avatar-magaspique',
+                'name'  => 'Magaspique',
+                'image' => 'images/pfp/magaspique.jpg',
+            ];
+        } elseif ($level == 25) {
+            $rewards['tokens'] = 1000;
+            $rewards['sleeve'] = [
+                'slug'  => 'sleeve-cisayox',
+                'name'  => 'Cisayox',
+                'image' => 'images/sleeves/cisayox.jpg',
+            ];
+        }
+
+        return $rewards;
+    }
+
+    /**
+     * Get the full rewards roadmap (all levels with notable rewards).
+     */
+    public static function getRewardsRoadmap(): array
+    {
+        $roadmap = [];
+        for ($lvl = 2; $lvl <= 30; $lvl++) {
+            $rewards = self::getLevelRewards($lvl);
+            $entry = ['level' => $lvl, 'tokens' => $rewards['tokens']];
+            if (isset($rewards['avatar'])) {
+                $entry['avatar'] = $rewards['avatar'];
+            }
+            if (isset($rewards['sleeve'])) {
+                $entry['sleeve'] = $rewards['sleeve'];
+            }
+            $roadmap[] = $entry;
+        }
+        return $roadmap;
+    }
+
+    /**
+     * Award XP and handle level-ups. Returns array with levels gained and rewards.
      */
     public function awardXp(int $amount): int
     {
@@ -69,6 +117,25 @@ class User extends Authenticatable
             $this->xp -= $this->xpToNextLevel();
             $this->level++;
             $levelsGained++;
+
+            // Distribute level rewards
+            $rewards = self::getLevelRewards($this->level);
+            $this->poketokens += $rewards['tokens'];
+
+            // Grant cosmetic items
+            if (isset($rewards['avatar']) || isset($rewards['sleeve'])) {
+                $slug = $rewards['avatar']['slug'] ?? $rewards['sleeve']['slug'] ?? null;
+                if ($slug) {
+                    $item = \App\Models\ShopItem::where('slug', $slug)->first();
+                    if ($item && !\App\Models\UserPurchase::where('user_id', $this->id)->where('shop_item_id', $item->id)->exists()) {
+                        \App\Models\UserPurchase::create([
+                            'user_id'      => $this->id,
+                            'shop_item_id' => $item->id,
+                            'purchased_at' => now(),
+                        ]);
+                    }
+                }
+            }
         }
 
         $this->save();

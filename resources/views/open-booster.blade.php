@@ -440,8 +440,14 @@
             @endif
         @endauth
 
-        {{-- ── Level-up popup ──────────────────────────────────────── --}}
+        {{-- ── Level-up popup (shows rewards earned) ────────────────── --}}
         @auth
+            @if(!empty($levelRewards ?? []))
+                @php
+                    $totalTokensEarned = collect($levelRewards)->sum('tokens');
+                    $hasSpecialReward = collect($levelRewards)->contains(fn($r) => isset($r['avatar']) || isset($r['sleeve']));
+                @endphp
+            @endif
             <div x-show="levelUpModal" x-transition.opacity
                  @click.self="levelUpModal = false" @keydown.escape.window="levelUpModal = false"
                  class="fixed inset-0 z-[60] flex items-center justify-center"
@@ -468,51 +474,47 @@
                             <span class="text-3xl font-black text-white">{{ $newLevel ?? auth()->user()->level }}</span>
                         </div>
 
-                        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color: #818cf8;">Niveau superieur !</p>
+                        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color: #818cf8;">Niveau supérieur !</p>
                         <h3 class="text-2xl font-black mb-2" style="color: var(--text-primary);">Niveau {{ $newLevel ?? auth()->user()->level }}</h3>
-                        <p class="text-sm mb-6" style="color: var(--text-muted);">Felicitations, tu deviens plus fort !</p>
+                        <p class="text-sm mb-5" style="color: var(--text-muted);">Félicitations, tu deviens plus fort !</p>
 
-                        {{-- Level 10 reward preview --}}
-                        @if(($newLevel ?? auth()->user()->level) < 10)
-                            <div class="p-4 rounded-xl mb-6" style="background: var(--bg-surface); border: 1px solid var(--border);">
-                                <p class="text-[10px] font-bold uppercase tracking-wider mb-3" style="color: var(--text-muted);">Recompenses au niveau 10</p>
-                                <div class="flex items-center justify-center gap-4">
-                                    {{-- Avatar reward --}}
-                                    <div class="text-center">
-                                        <div class="w-14 h-14 rounded-full mx-auto mb-2 overflow-hidden" style="border: 2px solid #a855f7; box-shadow: 0 0 12px rgba(168,85,247,0.4), 0 0 24px rgba(168,85,247,0.2);">
-                                            <img src="{{ asset('images/pfp/dresseur_hisui.jpg') }}" alt="Dresseur Hisui" class="w-full h-full object-cover" />
-                                        </div>
-                                        <p class="text-[10px] font-bold" style="color: #c084fc;">Dresseur Hisui</p>
-                                        <p class="text-[9px]" style="color: var(--text-muted);">Avatar epique</p>
-                                    </div>
-                                    {{-- Title reward --}}
-                                    <div class="text-center">
-                                        <div class="w-14 h-14 rounded-xl mx-auto mb-2 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(255,255,255,0.05)); border: 1px solid rgba(168,85,247,0.3);">
-                                            <svg class="w-6 h-6" style="color: #c084fc;" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
-                                        </div>
-                                        <p class="text-[10px] font-extrabold" style="background: linear-gradient(135deg, #a855f7, #ffffff, #c084fc); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: title-gradient-shift 4s ease infinite;">Chasseur</p>
-                                        <p class="text-[9px]" style="color: var(--text-muted);">Titre epique</p>
-                                    </div>
+                        {{-- Rewards earned --}}
+                        @if(!empty($levelRewards ?? []))
+                            <div class="p-4 rounded-xl mb-5" style="background: linear-gradient(135deg, rgba(212,168,67,0.08), rgba(255,255,255,0.02)); border: 1px solid rgba(212,168,67,0.2);">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-3" style="color: #d4a843;">Récompenses obtenues</p>
+
+                                {{-- Tokens --}}
+                                <div class="flex items-center justify-center gap-2 mb-3">
+                                    <img src="{{ asset('images/poketoken.png') }}" alt="" class="w-5 h-5 object-contain" />
+                                    <span class="text-lg font-black" style="color: #d4a843;">+{{ number_format($totalTokensEarned ?? 0) }}</span>
+                                    <span class="text-xs font-semibold" style="color: var(--text-muted);">PokéTokens</span>
                                 </div>
-                            </div>
-                        @elseif(($newLevel ?? auth()->user()->level) == 10)
-                            <div class="p-4 rounded-xl mb-6" style="background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(255,255,255,0.03)); border: 1px solid rgba(168,85,247,0.3);">
-                                <p class="text-[10px] font-bold uppercase tracking-wider mb-3" style="color: #c084fc;">Recompenses debloquees !</p>
-                                <div class="flex items-center justify-center gap-4">
-                                    <div class="text-center">
-                                        <div class="w-14 h-14 rounded-full mx-auto mb-2 overflow-hidden" style="border: 2px solid #a855f7; box-shadow: 0 0 16px rgba(168,85,247,0.5);">
-                                            <img src="{{ asset('images/pfp/dresseur_hisui.jpg') }}" alt="Dresseur Hisui" class="w-full h-full object-cover" />
+
+                                {{-- Special items --}}
+                                @foreach($levelRewards ?? [] as $lvl => $reward)
+                                    @if(isset($reward['avatar']))
+                                        <div class="flex items-center justify-center gap-3 pt-3" style="border-top: 1px solid var(--border);">
+                                            <div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0" style="border: 2px solid #a78bfa; box-shadow: 0 0 12px rgba(167,139,250,0.4);">
+                                                <img src="{{ asset($reward['avatar']['image']) }}" alt="" class="w-full h-full object-cover" />
+                                            </div>
+                                            <div class="text-left">
+                                                <p class="text-xs font-bold" style="color: #c084fc;">{{ $reward['avatar']['name'] }}</p>
+                                                <p class="text-[10px]" style="color: var(--text-muted);">Avatar débloqué</p>
+                                            </div>
                                         </div>
-                                        <p class="text-[10px] font-bold" style="color: #c084fc;">Dresseur Hisui</p>
-                                    </div>
-                                    <div class="text-center">
-                                        <div class="w-14 h-14 rounded-xl mx-auto mb-2 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(255,255,255,0.05)); border: 1px solid rgba(168,85,247,0.4);">
-                                            <svg class="w-7 h-7" style="color: #c084fc;" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
+                                    @endif
+                                    @if(isset($reward['sleeve']))
+                                        <div class="flex items-center justify-center gap-3 pt-3" style="border-top: 1px solid var(--border);">
+                                            <div class="w-9 h-12 rounded overflow-hidden flex-shrink-0" style="border: 2px solid #818cf8; box-shadow: 0 0 12px rgba(129,140,248,0.4);">
+                                                <img src="{{ asset($reward['sleeve']['image']) }}" alt="" class="w-full h-full object-cover" />
+                                            </div>
+                                            <div class="text-left">
+                                                <p class="text-xs font-bold" style="color: #818cf8;">{{ $reward['sleeve']['name'] }}</p>
+                                                <p class="text-[10px]" style="color: var(--text-muted);">Sleeve débloquée</p>
+                                            </div>
                                         </div>
-                                        <p class="text-[10px] font-extrabold" style="background: linear-gradient(135deg, #a855f7, #ffffff, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Chasseur</p>
-                                    </div>
-                                </div>
-                                <p class="text-xs mt-3 font-semibold" style="color: #34d399;">Rendez-vous dans la boutique pour equiper tes recompenses !</p>
+                                    @endif
+                                @endforeach
                             </div>
                         @endif
 

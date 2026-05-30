@@ -217,12 +217,11 @@
             </div>
         </div>
 
-        {{-- Collapse toggle — teardrop outside sidebar --}}
+        {{-- Collapse toggle — visible arrow outside sidebar --}}
         <button @click="collapsed = !collapsed"
                 class="sidebar-collapse-teardrop"
                 title="Réduire / agrandir">
-            <svg x-show="!collapsed" class="w-3 h-3" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
-            <svg x-show="collapsed" class="w-3 h-3" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
+            <svg :class="collapsed ? 'rotate-180' : ''" class="w-3.5 h-3.5 transition-transform duration-300" fill="currentColor" viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>
         </button>
     </aside>
 
@@ -242,34 +241,122 @@
                 if ($xpUser->active_title) {
                     $xpActiveTitle = \App\Models\ShopItem::where('slug', $xpUser->active_title)->first();
                 }
+                $xpRoadmap = \App\Models\User::getRewardsRoadmap();
             @endphp
-            <div class="xp-bar-floating">
-                <a href="{{ route('profile.edit') }}" class="xp-bar-avatar" style="{{ $xpActiveFrame ? 'border: ' . ($xpActiveFrame->data['border'] ?? '2px solid var(--border)') . '; box-shadow: ' . ($xpActiveFrame->data['shadow'] ?? 'none') . ';' : '' }}">
-                    @if($xpUser->avatar)
-                        <img src="{{ $xpUser->avatar }}" alt="" class="w-full h-full object-cover" />
-                    @else
-                        <span class="text-xs font-bold" style="color: var(--text-primary);">{{ strtoupper(substr($xpUser->name ?? 'D', 0, 1)) }}</span>
-                    @endif
-                </a>
-                <div class="xp-bar-info">
-                    <div class="flex items-center gap-1.5">
-                        <span class="text-[11px] font-bold truncate" style="color: var(--text-primary); max-width: 80px;">{{ $xpUser->name }}</span>
-                        @if($xpActiveTitle)
-                            <span class="text-[8px] font-extrabold truncate {{ ($xpActiveTitle->data['animated'] ?? false) ? 'title-animated' : '' }}"
-                                  style="background: {{ $xpActiveTitle->data['gradient'] ?? '' }}; background-size: {{ ($xpActiveTitle->data['animated'] ?? false) ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $xpActiveTitle->data['shadow'] ?? 'none' }}; max-width: 60px;">
-                                {{ $xpActiveTitle->name }}
-                            </span>
+            <div x-data="{ xpPopup: false }" @keydown.escape.window="xpPopup = false" class="xp-bar-wrapper">
+                {{-- Clickable XP bar --}}
+                <div class="xp-bar-floating cursor-pointer" @click="xpPopup = !xpPopup"
+                     x-on:click.window="if(xpPopup && !$el.closest('.xp-bar-wrapper').contains($event.target)) xpPopup = false">
+                    <div class="xp-bar-avatar" style="{{ $xpActiveFrame ? 'border: ' . ($xpActiveFrame->data['border'] ?? '2px solid var(--border)') . '; box-shadow: ' . ($xpActiveFrame->data['shadow'] ?? 'none') . ';' : '' }}">
+                        @if($xpUser->avatar)
+                            <img src="{{ $xpUser->avatar }}" alt="" class="w-full h-full object-cover" />
+                        @else
+                            <span class="text-xs font-bold" style="color: var(--text-primary);">{{ strtoupper(substr($xpUser->name ?? 'D', 0, 1)) }}</span>
                         @endif
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="xp-bar-track">
-                            <div class="xp-bar-fill" style="width: {{ $xpProgress }}%;"></div>
+                    <div class="xp-bar-info">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[11px] font-bold truncate" style="color: var(--text-primary); max-width: 80px;">{{ $xpUser->name }}</span>
+                            @if($xpActiveTitle)
+                                <span class="text-[8px] font-extrabold truncate {{ ($xpActiveTitle->data['animated'] ?? false) ? 'title-animated' : '' }}"
+                                      style="background: {{ $xpActiveTitle->data['gradient'] ?? '' }}; background-size: {{ ($xpActiveTitle->data['animated'] ?? false) ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $xpActiveTitle->data['shadow'] ?? 'none' }}; max-width: 60px;">
+                                    {{ $xpActiveTitle->name }}
+                                </span>
+                            @endif
                         </div>
-                        <span class="text-[8px] font-bold whitespace-nowrap" style="color: var(--text-muted);">{{ $xpUser->xp }}/{{ $xpNeeded }}</span>
+                        <div class="flex items-center gap-1.5">
+                            <div class="xp-bar-track">
+                                <div class="xp-bar-fill" style="width: {{ $xpProgress }}%;"></div>
+                            </div>
+                            <span class="text-[8px] font-bold whitespace-nowrap" style="color: var(--text-muted);">{{ $xpUser->xp }}/{{ $xpNeeded }}</span>
+                        </div>
+                    </div>
+                    <div class="xp-bar-level">
+                        <span class="text-xs font-black">{{ $xpUser->level }}</span>
                     </div>
                 </div>
-                <div class="xp-bar-level">
-                    <span class="text-xs font-black">{{ $xpUser->level }}</span>
+
+                {{-- XP Progression popup --}}
+                <div x-show="xpPopup" x-transition.opacity
+                     class="xp-popup" style="position: absolute; top: 42px; right: 0; z-index: 50; width: 340px; max-height: 70vh; border-radius: 16px; background: var(--bg-card); border: 1px solid var(--border-light); box-shadow: 0 12px 40px rgba(0,0,0,0.4); overflow: hidden;">
+
+                    {{-- Header --}}
+                    <div class="p-5 pb-4" style="border-bottom: 1px solid var(--border);">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); box-shadow: 0 0 20px rgba(99,102,241,0.3);">
+                                <span class="text-lg font-black text-white">{{ $xpUser->level }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold" style="color: var(--text-primary);">Niveau {{ $xpUser->level }}</p>
+                                <p class="text-[11px]" style="color: var(--text-muted);">{{ $xpUser->name }}</p>
+                            </div>
+                        </div>
+                        {{-- XP progress --}}
+                        <div class="mb-1 flex justify-between">
+                            <span class="text-[10px] font-bold" style="color: var(--text-muted);">Progression</span>
+                            <span class="text-[10px] font-bold" style="color: #818cf8;">{{ $xpUser->xp }} / {{ $xpNeeded }} XP</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full overflow-hidden" style="background: rgba(255,255,255,0.06);">
+                            <div class="h-full rounded-full" style="width: {{ $xpProgress }}%; background: linear-gradient(90deg, #6366f1, #a78bfa); box-shadow: 0 0 8px rgba(99,102,241,0.5);"></div>
+                        </div>
+                    </div>
+
+                    {{-- Rewards roadmap --}}
+                    <div class="overflow-y-auto" style="max-height: calc(70vh - 140px); padding: 12px 16px;">
+                        <p class="text-[10px] font-bold uppercase tracking-wider mb-3" style="color: var(--text-muted);">Récompenses par niveau</p>
+                        <div class="space-y-2">
+                            @foreach($xpRoadmap as $reward)
+                                @php
+                                    $isReached = $xpUser->level >= $reward['level'];
+                                    $isCurrent = $xpUser->level + 1 == $reward['level'];
+                                    $hasSpecial = isset($reward['avatar']) || isset($reward['sleeve']);
+                                @endphp
+                                <div class="flex items-center gap-3 p-2.5 rounded-xl transition-all"
+                                     style="{{ $isCurrent ? 'background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2);' : ($isReached ? 'opacity: 0.5;' : 'background: var(--bg-surface); border: 1px solid transparent;') }}">
+                                    {{-- Level badge --}}
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                                         style="{{ $isReached ? 'background: rgba(34,197,94,0.15); color: #22c55e;' : ($isCurrent ? 'background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white;' : 'background: var(--bg-input); color: var(--text-muted);') }}">
+                                        @if($isReached)
+                                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>
+                                        @else
+                                            <span class="text-[10px] font-black">{{ $reward['level'] }}</span>
+                                        @endif
+                                    </div>
+                                    {{-- Reward info --}}
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex items-center gap-1">
+                                                <img src="{{ asset('images/poketoken.png') }}" alt="" class="w-3.5 h-3.5 object-contain" />
+                                                <span class="text-[11px] font-bold" style="color: #d4a843;">{{ number_format($reward['tokens']) }}</span>
+                                            </div>
+                                            @if(isset($reward['avatar']))
+                                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" style="background: rgba(168,85,247,0.15); color: #c084fc;">+ Avatar</span>
+                                            @endif
+                                            @if(isset($reward['sleeve']))
+                                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded" style="background: rgba(99,102,241,0.15); color: #818cf8;">+ Sleeve</span>
+                                            @endif
+                                        </div>
+                                        @if($hasSpecial)
+                                            <div class="flex items-center gap-2 mt-1.5">
+                                                @if(isset($reward['avatar']))
+                                                    <div class="flex items-center gap-1.5">
+                                                        <img src="{{ asset($reward['avatar']['image']) }}" alt="" class="w-6 h-6 rounded-full object-cover" style="border: 1.5px solid rgba(168,85,247,0.4);" />
+                                                        <span class="text-[10px] font-semibold" style="color: var(--text-secondary);">{{ $reward['avatar']['name'] }}</span>
+                                                    </div>
+                                                @endif
+                                                @if(isset($reward['sleeve']))
+                                                    <div class="flex items-center gap-1.5">
+                                                        <img src="{{ asset($reward['sleeve']['image']) }}" alt="" class="w-6 h-8 rounded object-cover" style="border: 1.5px solid rgba(99,102,241,0.4);" />
+                                                        <span class="text-[10px] font-semibold" style="color: var(--text-secondary);">{{ $reward['sleeve']['name'] }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
         @endauth
