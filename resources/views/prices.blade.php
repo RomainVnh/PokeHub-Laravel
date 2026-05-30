@@ -30,12 +30,12 @@
             </div>
         </div>
 
-        {{-- ── Suggestions ─────────────────────────────────────────── --}}
+        {{-- ── Suggestions + Featured ───────────────────────────────── --}}
         <div class="px-10 py-10">
             <template x-if="results.length === 0 && !loading && !query">
                 <div>
                     <h2 class="text-lg font-bold mb-6" style="color: var(--text-primary);">Pokemon populaires</h2>
-                    <div class="flex flex-wrap gap-3">
+                    <div class="flex flex-wrap gap-3 mb-10">
                         @foreach($popularPokemon as $name)
                             <button @click="query = '{{ $name }}'; searchCards()"
                                     class="px-5 py-3 rounded-xl text-sm font-bold transition-all"
@@ -46,6 +46,41 @@
                             </button>
                         @endforeach
                     </div>
+
+                    {{-- Featured cards --}}
+                    @if(!empty($featuredCards))
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="label-xs block mb-1" style="color: var(--gold);">À la une</span>
+                                <h2 class="text-lg font-bold" style="color: var(--text-primary);">Cartes les plus recherchées</h2>
+                            </div>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full" style="background: rgba(212,168,67,0.1); color: var(--gold); border: 1px solid rgba(212,168,67,0.2);">
+                                {{ count($featuredCards) }} cartes
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
+                            @foreach($featuredCards as $card)
+                                <div class="edition-card group">
+                                    <div class="aspect-[63/88] overflow-hidden rounded-t-xl">
+                                        <img src="{{ $card['image'] }}" alt="{{ $card['name'] }}"
+                                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                             loading="lazy"
+                                             onerror="this.style.opacity='0.3'" />
+                                    </div>
+                                    <div class="p-3 space-y-1.5">
+                                        <p class="text-sm font-bold line-clamp-1" style="color: var(--text-primary);">{{ $card['name'] }}</p>
+                                        <p class="text-[11px]" style="color: var(--text-muted);">{{ $card['set'] }} · {{ $card['rarity'] }}</p>
+                                        <div class="flex items-center justify-between pt-1">
+                                            <span class="text-lg font-black" style="color: var(--gold);">{{ number_format($card['price'], 2) }} €</span>
+                                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                                                  style="background: rgba(212,168,67,0.15); color: var(--gold);">Estimation</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             </template>
 

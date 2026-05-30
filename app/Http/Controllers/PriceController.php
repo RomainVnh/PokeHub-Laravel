@@ -19,10 +19,68 @@ class PriceController extends Controller
      */
     public function index()
     {
+        set_time_limit(180);
+
         $popularPokemon = ['Charizard', 'Pikachu', 'Mewtwo', 'Mew', 'Rayquaza', 'Lugia'];
+
+        // Fetch featured cards (cached for 6 hours)
+        $featuredCards = Cache::remember('price_featured_cards', 21600, function () {
+            $featured = [];
+            $queries = ['Charizard', 'Pikachu', 'Mewtwo', 'Rayquaza', 'Lugia', 'Gardevoir', 'Arceus', 'Gengar'];
+
+            foreach ($queries as $q) {
+                $response = Http::connectTimeout(10)->timeout(20)
+                    ->get("https://api.tcgdex.net/v2/en/cards", ['name' => $q]);
+
+                if ($response->failed()) continue;
+
+                $cards = $response->json();
+                if (!is_array($cards) || empty($cards)) continue;
+
+                // Pick 3 random cards per Pokemon for variety
+                shuffle($cards);
+                $picks = array_slice($cards, 0, 3);
+
+                // Fetch full details concurrently
+                $responses = Http::pool(fn ($pool) =>
+                    array_map(
+                        fn ($c) => $pool->connectTimeout(10)->timeout(15)
+                            ->get("https://api.tcgdex.net/v2/en/cards/{$c['id']}"),
+                        $picks
+                    )
+                );
+
+                foreach ($responses as $resp) {
+                    if ($resp instanceof \Illuminate\Http\Client\Response && $resp->successful()) {
+                        $card = $resp->json();
+                        if (!$card || empty($card['image'] ?? '')) continue;
+
+                        $cardId   = $card['id'] ?? '';
+                        $rarity   = $card['rarity'] ?? null;
+                        $category = $card['category'] ?? null;
+                        $price    = $this->estimatePrice($cardId, $rarity, $category);
+
+                        $featured[] = [
+                            'id'     => $cardId,
+                            'name'   => $card['name'] ?? '',
+                            'image'  => ($card['image'] ?? '') . '/low.webp',
+                            'rarity' => $rarity ?? 'Common',
+                            'set'    => $card['set']['name'] ?? '',
+                            'setId'  => $card['set']['id'] ?? '',
+                            'price'  => $price,
+                        ];
+                    }
+                }
+            }
+
+            // Sort by price descending and keep top 18
+            usort($featured, fn($a, $b) => $b['price'] <=> $a['price']);
+            return array_slice($featured, 0, 18);
+        });
 
         return view('prices', [
             'popularPokemon' => $popularPokemon,
+            'featuredCards'   => $featuredCards,
         ]);
     }
 
