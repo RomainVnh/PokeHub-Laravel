@@ -56,6 +56,8 @@
             mobileIdx: 0,
             mobileSummary: false,
             premiumConfirm: false,
+            levelUpModal: {{ ($levelsGained ?? 0) > 0 ? 'true' : 'false' }},
+            showXpGain: false,
             get allRevealed() { return this.revealed.every(Boolean); },
             get isMobile() { return window.innerWidth <= 768; },
             showZoom(i) {
@@ -412,6 +414,115 @@
                         @endif
                     </div>
                     <button @click="premiumConfirm = false"
+                            class="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center"
+                            style="background: rgba(255,255,255,0.08); color: var(--text-muted);">
+                        <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                    </button>
+                </div>
+            </div>
+        @endauth
+
+        {{-- ── XP gain toast ──────────────────────────────────────── --}}
+        @auth
+            @if(($xpGained ?? 0) > 0)
+                <div x-data="{ show: false }" x-init="setTimeout(() => show = true, 1500); setTimeout(() => show = false, 5000)"
+                     x-show="show" x-transition.opacity
+                     class="fixed bottom-6 right-6 z-40 flex items-center gap-3 px-5 py-3 rounded-2xl"
+                     style="background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); backdrop-filter: blur(16px); box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                        <svg class="w-4 h-4" fill="white" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3L288.1 439.8 416.2 508.3c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.2 329 542.4 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L380.9 150.3 316.9 18z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold" style="color: #a5b4fc;">+{{ $xpGained }} XP</p>
+                        <p class="text-[10px]" style="color: var(--text-muted);">Niv. {{ auth()->user()->level }} — {{ auth()->user()->xp }}/{{ auth()->user()->xpToNextLevel() }}</p>
+                    </div>
+                </div>
+            @endif
+        @endauth
+
+        {{-- ── Level-up popup ──────────────────────────────────────── --}}
+        @auth
+            <div x-show="levelUpModal" x-transition.opacity
+                 @click.self="levelUpModal = false" @keydown.escape.window="levelUpModal = false"
+                 class="fixed inset-0 z-[60] flex items-center justify-center"
+                 style="background: rgba(0,0,0,0.8); backdrop-filter: blur(12px);">
+                <div x-show="levelUpModal" x-transition.scale.origin.center
+                     class="relative w-full max-w-sm mx-4 rounded-2xl overflow-hidden"
+                     style="background: var(--bg-card); border: 1px solid rgba(99,102,241,0.4);">
+
+                    {{-- Top gradient bar --}}
+                    <div class="h-1.5" style="background: linear-gradient(90deg, #6366f1, #a78bfa, #c084fc);"></div>
+
+                    {{-- Confetti-like particles --}}
+                    <div class="absolute inset-0 overflow-hidden pointer-events-none" style="opacity: 0.4;">
+                        <div class="absolute w-2 h-2 rounded-full" style="background: #818cf8; top: 20%; left: 15%; animation: levelup-float 3s ease-in-out infinite;"></div>
+                        <div class="absolute w-1.5 h-1.5 rounded-full" style="background: #c084fc; top: 30%; right: 20%; animation: levelup-float 2.5s ease-in-out infinite 0.5s;"></div>
+                        <div class="absolute w-2 h-2 rounded-full" style="background: #fbbf24; top: 60%; left: 10%; animation: levelup-float 3.5s ease-in-out infinite 1s;"></div>
+                        <div class="absolute w-1 h-1 rounded-full" style="background: #34d399; top: 40%; right: 15%; animation: levelup-float 2s ease-in-out infinite 0.3s;"></div>
+                    </div>
+
+                    <div class="p-8 text-center relative">
+                        {{-- Level badge --}}
+                        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+                             style="background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa); box-shadow: 0 0 40px rgba(99,102,241,0.5), 0 0 80px rgba(99,102,241,0.2);">
+                            <span class="text-3xl font-black text-white">{{ $newLevel ?? auth()->user()->level }}</span>
+                        </div>
+
+                        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color: #818cf8;">Niveau superieur !</p>
+                        <h3 class="text-2xl font-black mb-2" style="color: var(--text-primary);">Niveau {{ $newLevel ?? auth()->user()->level }}</h3>
+                        <p class="text-sm mb-6" style="color: var(--text-muted);">Felicitations, tu deviens plus fort !</p>
+
+                        {{-- Level 10 reward preview --}}
+                        @if(($newLevel ?? auth()->user()->level) < 10)
+                            <div class="p-4 rounded-xl mb-6" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-3" style="color: var(--text-muted);">Recompenses au niveau 10</p>
+                                <div class="flex items-center justify-center gap-4">
+                                    {{-- Avatar reward --}}
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 rounded-full mx-auto mb-2 overflow-hidden" style="border: 2px solid #a855f7; box-shadow: 0 0 12px rgba(168,85,247,0.4), 0 0 24px rgba(168,85,247,0.2);">
+                                            <img src="{{ asset('images/pfp/dresseur_hisui.jpg') }}" alt="Dresseur Hisui" class="w-full h-full object-cover" />
+                                        </div>
+                                        <p class="text-[10px] font-bold" style="color: #c084fc;">Dresseur Hisui</p>
+                                        <p class="text-[9px]" style="color: var(--text-muted);">Avatar epique</p>
+                                    </div>
+                                    {{-- Title reward --}}
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 rounded-xl mx-auto mb-2 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(168,85,247,0.15), rgba(255,255,255,0.05)); border: 1px solid rgba(168,85,247,0.3);">
+                                            <svg class="w-6 h-6" style="color: #c084fc;" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
+                                        </div>
+                                        <p class="text-[10px] font-extrabold" style="background: linear-gradient(135deg, #a855f7, #ffffff, #c084fc); background-size: 200% 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: title-gradient-shift 4s ease infinite;">Chasseur</p>
+                                        <p class="text-[9px]" style="color: var(--text-muted);">Titre epique</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif(($newLevel ?? auth()->user()->level) == 10)
+                            <div class="p-4 rounded-xl mb-6" style="background: linear-gradient(135deg, rgba(168,85,247,0.1), rgba(255,255,255,0.03)); border: 1px solid rgba(168,85,247,0.3);">
+                                <p class="text-[10px] font-bold uppercase tracking-wider mb-3" style="color: #c084fc;">Recompenses debloquees !</p>
+                                <div class="flex items-center justify-center gap-4">
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 rounded-full mx-auto mb-2 overflow-hidden" style="border: 2px solid #a855f7; box-shadow: 0 0 16px rgba(168,85,247,0.5);">
+                                            <img src="{{ asset('images/pfp/dresseur_hisui.jpg') }}" alt="Dresseur Hisui" class="w-full h-full object-cover" />
+                                        </div>
+                                        <p class="text-[10px] font-bold" style="color: #c084fc;">Dresseur Hisui</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="w-14 h-14 rounded-xl mx-auto mb-2 flex items-center justify-center" style="background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(255,255,255,0.05)); border: 1px solid rgba(168,85,247,0.4);">
+                                            <svg class="w-7 h-7" style="color: #c084fc;" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
+                                        </div>
+                                        <p class="text-[10px] font-extrabold" style="background: linear-gradient(135deg, #a855f7, #ffffff, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Chasseur</p>
+                                    </div>
+                                </div>
+                                <p class="text-xs mt-3 font-semibold" style="color: #34d399;">Rendez-vous dans la boutique pour equiper tes recompenses !</p>
+                            </div>
+                        @endif
+
+                        <button @click="levelUpModal = false" class="btn w-full"
+                                style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-weight: 700;">
+                            Continuer
+                        </button>
+                    </div>
+
+                    <button @click="levelUpModal = false"
                             class="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center"
                             style="background: rgba(255,255,255,0.08); color: var(--text-muted);">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\CollectionController;
+use App\Models\User;
 use App\Models\UserCard;
 use App\Models\UserFavorite;
 use App\Services\PokemonTcgService;
@@ -164,11 +165,28 @@ class SetController extends Controller
 
         $newCards = $this->trackDrawnCards($drawn, $setId);
 
+        // Award XP
+        $xpGained = 0;
+        $levelsGained = 0;
+        $newLevel = null;
+        if (Auth::check()) {
+            $user = Auth::user();
+            $xpGained = User::calculateBoosterXp($drawn);
+            $levelBefore = $user->level;
+            $levelsGained = $user->awardXp($xpGained);
+            if ($levelsGained > 0) {
+                $newLevel = $user->level;
+            }
+        }
+
         return view('open-booster', [
-            'set'       => $set,
-            'drawn'     => $drawn,
-            'newCards'   => $newCards,
-            'isPremium' => false,
+            'set'          => $set,
+            'drawn'        => $drawn,
+            'newCards'      => $newCards,
+            'isPremium'    => false,
+            'xpGained'     => $xpGained,
+            'levelsGained' => $levelsGained,
+            'newLevel'     => $newLevel,
         ]);
     }
 
@@ -210,11 +228,26 @@ class SetController extends Controller
 
         $newCards = $this->trackDrawnCards($drawn, $setId);
 
+        // Award XP (premium boosters give 1.5x XP bonus)
+        $xpGained = 0;
+        $levelsGained = 0;
+        $newLevel = null;
+        $user = Auth::user();
+        $xpGained = (int) (User::calculateBoosterXp($drawn) * 1.5);
+        $levelBefore = $user->level;
+        $levelsGained = $user->awardXp($xpGained);
+        if ($levelsGained > 0) {
+            $newLevel = $user->level;
+        }
+
         return view('open-booster', [
-            'set'       => $set,
-            'drawn'     => $drawn,
-            'newCards'   => $newCards,
-            'isPremium' => true,
+            'set'          => $set,
+            'drawn'        => $drawn,
+            'newCards'      => $newCards,
+            'isPremium'    => true,
+            'xpGained'     => $xpGained,
+            'levelsGained' => $levelsGained,
+            'newLevel'     => $newLevel,
         ]);
     }
 

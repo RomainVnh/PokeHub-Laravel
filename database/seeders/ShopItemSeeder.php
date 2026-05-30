@@ -141,6 +141,22 @@ class ShopItemSeeder extends Seeder
                     'shadow'   => 'drop-shadow(0 0 6px rgba(255,0,0,0.35)) drop-shadow(0 0 6px rgba(0,191,255,0.35)) drop-shadow(0 0 6px rgba(139,92,246,0.35)) drop-shadow(0 0 14px rgba(255,215,0,0.4))',
                 ],
             ],
+            // Level 10 reward title
+            [
+                'slug'        => 'chasseur',
+                'category'    => 'title',
+                'name'        => 'Chasseur',
+                'description' => 'Récompense niveau 10 — Titre épique.',
+                'price'       => 0,
+                'preview'     => '',
+                'sort_order'  => 99,
+                'data'        => [
+                    'gradient'     => 'linear-gradient(135deg, #a855f7, #ffffff, #c084fc)',
+                    'shadow'       => 'drop-shadow(0 0 6px rgba(168,85,247,0.5)) drop-shadow(0 0 12px rgba(168,85,247,0.3))',
+                    'animated'     => true,
+                    'level_reward' => 10,
+                ],
+            ],
 
             // ═══ FRAMES ═══════════════════════════════════════════════
             [
@@ -378,6 +394,12 @@ class ShopItemSeeder extends Seeder
                 'slug' => 'avatar-giratina', 'category' => 'avatar', 'name' => 'Giratina',
                 'description' => 'L\'ombre du Monde Distorsion — Exclusif.', 'price' => 8000, 'preview' => '', 'sort_order' => 51,
                 'data' => ['image' => 'images/pfp/giratina.jpg', 'exclusive' => true],
+            ],
+            // Level 10 reward avatar
+            [
+                'slug' => 'avatar-dresseur-hisui', 'category' => 'avatar', 'name' => 'Dresseur de Hisui',
+                'description' => 'Récompense niveau 10 — Épique.', 'price' => 0, 'preview' => '', 'sort_order' => 99,
+                'data' => ['image' => 'images/pfp/dresseur_hisui.jpg', 'exclusive' => true, 'level_reward' => 10],
             ],
         ];
 

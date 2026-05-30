@@ -227,7 +227,53 @@
     </aside>
 
     {{-- ═══ Main ══════════════════════════════════════════════════════ --}}
-    <main class="flex-1 overflow-y-auto main-content">
+    <main class="flex-1 overflow-y-auto main-content relative">
+        {{-- ── XP / Level bar (top-right) ─────────────────────────────── --}}
+        @auth
+            @php
+                $xpUser = auth()->user();
+                $xpNeeded = $xpUser->xpToNextLevel();
+                $xpProgress = $xpUser->xpProgress();
+                $xpActiveFrame = null;
+                if ($xpUser->active_frame) {
+                    $xpActiveFrame = \App\Models\ShopItem::where('slug', $xpUser->active_frame)->first();
+                }
+                $xpActiveTitle = null;
+                if ($xpUser->active_title) {
+                    $xpActiveTitle = \App\Models\ShopItem::where('slug', $xpUser->active_title)->first();
+                }
+            @endphp
+            <div class="xp-bar-floating">
+                <a href="{{ route('profile.edit') }}" class="xp-bar-avatar" style="{{ $xpActiveFrame ? 'border: ' . ($xpActiveFrame->data['border'] ?? '2px solid var(--border)') . '; box-shadow: ' . ($xpActiveFrame->data['shadow'] ?? 'none') . ';' : '' }}">
+                    @if($xpUser->avatar)
+                        <img src="{{ $xpUser->avatar }}" alt="" class="w-full h-full object-cover" />
+                    @else
+                        <span class="text-xs font-bold" style="color: var(--text-primary);">{{ strtoupper(substr($xpUser->name ?? 'D', 0, 1)) }}</span>
+                    @endif
+                </a>
+                <div class="xp-bar-info">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold truncate" style="color: var(--text-primary); max-width: 100px;">{{ $xpUser->name }}</span>
+                        @if($xpActiveTitle)
+                            <span class="text-[9px] font-extrabold truncate {{ ($xpActiveTitle->data['animated'] ?? false) ? 'title-animated' : '' }}"
+                                  style="background: {{ $xpActiveTitle->data['gradient'] ?? '' }}; background-size: {{ ($xpActiveTitle->data['animated'] ?? false) ? '200% 200%' : 'auto' }}; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; filter: {{ $xpActiveTitle->data['shadow'] ?? 'none' }}; max-width: 80px;">
+                                {{ $xpActiveTitle->name }}
+                            </span>
+                        @endif
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="xp-bar-track">
+                            <div class="xp-bar-fill" style="width: {{ $xpProgress }}%;"></div>
+                        </div>
+                        <span class="text-[9px] font-bold whitespace-nowrap" style="color: var(--text-muted);">{{ $xpUser->xp }}/{{ $xpNeeded }}</span>
+                    </div>
+                </div>
+                <div class="xp-bar-level">
+                    <span class="text-sm font-black">{{ $xpUser->level }}</span>
+                </div>
+            </div>
+        @endauth
+
         {{ $slot }}
     </main>
 
