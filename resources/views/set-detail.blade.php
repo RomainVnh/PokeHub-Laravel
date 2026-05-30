@@ -94,7 +94,7 @@
                     <section>
                         <div class="flex items-center gap-3 mb-5">
                             <span class="section-pill">{{ count($group) }}</span>
-                            <h2 class="text-lg font-bold text-white">
+                            <h2 class="text-lg font-bold" style="color: var(--text-primary);">
                                 {{ $supertype === 'Pokémon' ? 'Pokémon' : ($supertype === 'Trainer' ? 'Trainers' : $supertype) }}
                             </h2>
                             <div class="flex-1 h-px" style="background: var(--border);"></div>

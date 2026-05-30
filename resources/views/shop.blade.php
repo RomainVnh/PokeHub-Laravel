@@ -64,7 +64,7 @@
             <button @click="tab = 'title'"
                     class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
                     :style="tab === 'title'
-                        ? 'background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(245,158,11,0.15)); color: #ffd700; border: 1px solid rgba(255,215,0,0.3);'
+                        ? 'background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2);'
                         : 'background: transparent; color: var(--text-muted); border: 1px solid var(--border);'">
                 <span class="flex items-center gap-2">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
@@ -74,7 +74,7 @@
             <button @click="tab = 'frame'"
                     class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
                     :style="tab === 'frame'
-                        ? 'background: linear-gradient(135deg, rgba(163,130,255,0.15), rgba(139,92,246,0.15)); color: #a382ff; border: 1px solid rgba(163,130,255,0.3);'
+                        ? 'background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2);'
                         : 'background: transparent; color: var(--text-muted); border: 1px solid var(--border);'">
                 <span class="flex items-center gap-2">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 448 512"><path d="M0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM48 368v48c0 8.8 7.2 16 16 16h48V368H48zm80 64H320V368H128v64zm224 0h48c8.8 0 16-7.2 16-16V368H352v64zM448 144c0-8.8-7.2-16-16-16H352v64h96V144zM320 128H128v64H320V128zM112 128H64c-8.8 0-16 7.2-16 16v48h64V128zM48 240v80H112V240H48zm80 80H320V240H128v80zm224-80v80h96V240H352z"/></svg>
@@ -84,7 +84,7 @@
             <button @click="tab = 'sleeve'"
                     class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
                     :style="tab === 'sleeve'
-                        ? 'background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(245,158,11,0.15)); color: #ef4444; border: 1px solid rgba(239,68,68,0.3);'
+                        ? 'background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2);'
                         : 'background: transparent; color: var(--text-muted); border: 1px solid var(--border);'">
                 <span class="flex items-center gap-2">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 576 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm80 256h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm-32-96a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zm256-32H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></svg>
@@ -94,7 +94,7 @@
             <button @click="tab = 'avatar'"
                     class="px-4 py-2 rounded-lg text-sm font-bold transition-all cursor-pointer"
                     :style="tab === 'avatar'
-                        ? 'background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.15)); color: #22c55e; border: 1px solid rgba(34,197,94,0.3);'
+                        ? 'background: rgba(255,255,255,0.1); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.2);'
                         : 'background: transparent; color: var(--text-muted); border: 1px solid var(--border);'">
                 <span class="flex items-center gap-2">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 512 512"><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>

@@ -48,9 +48,9 @@
                         <span class="text-lg font-extrabold" style="color: #d4a843;">{{ number_format($user->poketokens, 0, ',', ' ') }}</span>
                         <span class="text-xs font-medium" style="color: var(--text-muted);">PokéTokens</span>
                     </div>
-                    <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl" style="background: rgba(163,130,255,0.1); border: 1px solid rgba(163,130,255,0.25);">
-                        <svg class="w-5 h-5" style="color: #a382ff;" fill="currentColor" viewBox="0 0 576 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>
-                        <span class="text-lg font-extrabold" style="color: #a382ff;">{{ $cardsCount }}</span>
+                    <div class="flex items-center gap-2 px-4 py-2.5 rounded-xl" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1);">
+                        <svg class="w-5 h-5" style="color: rgba(255,255,255,0.7);" fill="currentColor" viewBox="0 0 576 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>
+                        <span class="text-lg font-extrabold" style="color: var(--text-primary);">{{ $cardsCount }}</span>
                         <span class="text-xs font-medium" style="color: var(--text-muted);">Cartes</span>
                     </div>
                 </div>
@@ -75,10 +75,10 @@
 
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {{-- Title --}}
-                            <div class="rounded-xl p-4 text-center" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                            <div class="rounded-xl p-4 text-center" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08);">
                                 <div class="w-10 h-10 rounded-lg mx-auto mb-3 flex items-center justify-center"
-                                     style="background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(245,158,11,0.15));">
-                                    <svg class="w-5 h-5" style="color: #ffd700;" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
+                                     style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);">
+                                    <svg class="w-5 h-5" style="color: rgba(255,255,255,0.85);" fill="currentColor" viewBox="0 0 576 512"><path d="M309 106c11.4-7 19-19.7 19-34c0-22.1-17.9-40-40-40s-40 17.9-40 40c0 14.4 7.6 27 19 34L209.7 220.6c-9.1 18.2-32.7 23.4-48.6 10.7L72 160c5-6.7 8-15 8-24c0-22.1-17.9-40-40-40S0 113.9 0 136s17.9 40 40 40c.2 0 .5 0 .7 0L86.4 427.4c5.5 30.4 32 52.6 63 52.6H426.6c30.9 0 57.4-22.1 63-52.6L535.3 176c.2 0 .5 0 .7 0c22.1 0 40-17.9 40-40s-17.9-40-40-40s-40 17.9-40 40c0 9 3 17.3 8 24l-89.1 71.3c-15.9 12.7-39.5 7.5-48.6-10.7L309 106z"/></svg>
                                 </div>
                                 <p class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">Titre</p>
                                 @if($activeTitle)
@@ -96,10 +96,10 @@
                             </div>
 
                             {{-- Frame --}}
-                            <div class="rounded-xl p-4 text-center" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                            <div class="rounded-xl p-4 text-center" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08);">
                                 <div class="w-10 h-10 rounded-lg mx-auto mb-3 flex items-center justify-center"
-                                     style="background: linear-gradient(135deg, rgba(163,130,255,0.15), rgba(139,92,246,0.15));">
-                                    <svg class="w-5 h-5" style="color: #a382ff;" fill="currentColor" viewBox="0 0 448 512"><path d="M0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM48 368v48c0 8.8 7.2 16 16 16h48V368H48zm80 64H320V368H128v64zm224 0h48c8.8 0 16-7.2 16-16V368H352v64zM448 144c0-8.8-7.2-16-16-16H352v64h96V144zM320 128H128v64H320V128zM112 128H64c-8.8 0-16 7.2-16 16v48h64V128zM48 240v80H112V240H48zm80 80H320V240H128v80zm224-80v80h96V240H352z"/></svg>
+                                     style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);">
+                                    <svg class="w-5 h-5" style="color: rgba(255,255,255,0.85);" fill="currentColor" viewBox="0 0 448 512"><path d="M0 96C0 60.7 28.7 32 64 32H384c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM48 368v48c0 8.8 7.2 16 16 16h48V368H48zm80 64H320V368H128v64zm224 0h48c8.8 0 16-7.2 16-16V368H352v64zM448 144c0-8.8-7.2-16-16-16H352v64h96V144zM320 128H128v64H320V128zM112 128H64c-8.8 0-16 7.2-16 16v48h64V128zM48 240v80H112V240H48zm80 80H320V240H128v80zm224-80v80h96V240H352z"/></svg>
                                 </div>
                                 <p class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">Cadre</p>
                                 @if($activeFrame)
@@ -115,10 +115,10 @@
                             </div>
 
                             {{-- Sleeve --}}
-                            <div class="rounded-xl p-4 text-center" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                            <div class="rounded-xl p-4 text-center" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08);">
                                 <div class="w-10 h-10 rounded-lg mx-auto mb-3 flex items-center justify-center"
-                                     style="background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(245,158,11,0.15));">
-                                    <svg class="w-5 h-5" style="color: #ef4444;" fill="currentColor" viewBox="0 0 576 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>
+                                     style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);">
+                                    <svg class="w-5 h-5" style="color: rgba(255,255,255,0.85);" fill="currentColor" viewBox="0 0 576 512"><path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64z"/></svg>
                                 </div>
                                 <p class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">Sleeve</p>
                                 @if($activeSleeve)
@@ -138,10 +138,10 @@
                             </div>
 
                             {{-- Avatar --}}
-                            <div class="rounded-xl p-4 text-center" style="background: var(--bg-surface); border: 1px solid var(--border);">
+                            <div class="rounded-xl p-4 text-center" style="background: rgba(255,255,255,0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08);">
                                 <div class="w-10 h-10 rounded-lg mx-auto mb-3 flex items-center justify-center"
-                                     style="background: linear-gradient(135deg, rgba(34,197,94,0.15), rgba(16,185,129,0.15));">
-                                    <svg class="w-5 h-5" style="color: #22c55e;" fill="currentColor" viewBox="0 0 512 512"><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>
+                                     style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);">
+                                    <svg class="w-5 h-5" style="color: rgba(255,255,255,0.85);" fill="currentColor" viewBox="0 0 512 512"><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>
                                 </div>
                                 <p class="text-[10px] font-semibold uppercase tracking-wider mb-1" style="color: var(--text-muted);">Avatar</p>
                                 @if($user->avatar)

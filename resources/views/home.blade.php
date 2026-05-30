@@ -151,9 +151,9 @@
                         <h2 class="text-2xl font-extrabold text-white">Dernières éditions</h2>
                     </div>
                     <a href="{{ route('encyclopedia') }}" class="flex items-center gap-2 text-sm font-semibold transition-colors"
-                       style="color: white;"
-                       onmouseover="this.style.color='rgba(255,255,255,0.7)'"
-                       onmouseout="this.style.color='var(--gold)'">
+                       style="color: var(--text-primary);"
+                       onmouseover="this.style.color='var(--text-secondary)'"
+                       onmouseout="this.style.color='var(--gold)'"
                         Voir toutes
                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>
                     </a>
